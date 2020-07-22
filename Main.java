@@ -5,5 +5,6 @@ class Main
 		Node node = new Node();
 		SetUpGUI gui = new SetUpGUI();
 		
+		System.out.print("Checking 123");
 	}
 }
