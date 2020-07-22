@@ -1,16 +1,19 @@
 import javax.swing.*;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
+import java.awt.event.*;
 
-class SetUpGUI extends JFrame
+class SetUpGUI extends JFrame implements ActionListener
 {
 	//private variables
 	final private int WIDTH = 1200;
-	final private int HEIGHT = 500;
+	final private int HEIGHT = 600;
 	final public String TABNODE = "Create and move nodes around in this tab.";
 	final public String TABFORCE = "Calculate the forces in the members joining the nodes here.";
 	final public String TABCONNECTIONS = "Connect the correct nodes to one another here.";
 	final public String TABSAFETY = "Look at the factor of safety of every member.";
+	
+	private int numclicks;
 	
 	//creates new objects of the java swing class to make the buttons and whatnot
 	//creates the panels for each tab used in the GUI
@@ -26,6 +29,7 @@ class SetUpGUI extends JFrame
 	JTextField textfield = new JTextField("Hello, how are you today?");
 	JTextArea textarea = new JTextArea("How\tare\tyou\t?");
 	
+	
 	//creates the labels
 	JLabel label = new JLabel("This is my label");
 	
@@ -38,10 +42,18 @@ class SetUpGUI extends JFrame
 		//sets the frame of the GUI up
 		super("Truss Solver");
 		
+		numclicks = 0;
+		
 		//sets the defaults of the GUI
 		setSize(WIDTH, HEIGHT);
 		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		//adds an action listener to the add node button
+		button.addActionListener(this);
+		button.setActionCommand("AddNode");
+		button2.addActionListener(this);
+		button2.setActionCommand("Test");
 		
 		//adds the different panels & tabs onto the frame
 		panel1.add(button, BorderLayout.CENTER);
@@ -56,8 +68,8 @@ class SetUpGUI extends JFrame
 		tabs.addTab("Forces", null, panel3, TABFORCE);
 		tabs.addTab("Factor of Safety", null, panel4, TABSAFETY);
 		
-		tabs.setPreferredSize(new Dimension(WIDTH / 2, HEIGHT));
-		panel5.setPreferredSize(new Dimension(WIDTH / 2, HEIGHT));
+		tabs.setPreferredSize(new Dimension(WIDTH * 1/4, HEIGHT));
+		panel5.setPreferredSize(new Dimension(WIDTH * 3/4, HEIGHT));
 		tabs.setLocation(WIDTH/2, 0);
 		add(tabs, BorderLayout.EAST);
 		add(panel5, BorderLayout.WEST);
@@ -86,5 +98,17 @@ class SetUpGUI extends JFrame
 	private void SafetyTab()
 	{
 		
+	}
+	
+	public void actionPerformed(ActionEvent e)
+	{
+		if(e.getActionCommand() == "AddNode")
+			numclicks++;
+		
+		else if(e.getActionCommand() == "Test")
+			System.out.println(numclicks);
+		
+		else
+			System.out.print("stupid");
 	}
 }
