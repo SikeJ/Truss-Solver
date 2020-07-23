@@ -15,6 +15,8 @@ class SetUpGUI extends JFrame implements ActionListener
 	
 	private int numclicks;
 	
+	private int addNodeButtonHeightL = 100;
+	
 	//creates new objects of the java swing class to make the buttons and whatnot
 	//creates the panels for each tab used in the GUI
 	JPanel panel1 = new JPanel();
@@ -55,6 +57,8 @@ class SetUpGUI extends JFrame implements ActionListener
 		button2.addActionListener(this);
 		button2.setActionCommand("Test");
 		
+		button.setBounds(WIDTH * 3/4 + 20, addNodeButtonHeightL, 20, 15);
+		
 		//adds the different panels & tabs onto the frame
 		panel1.add(button, BorderLayout.CENTER);
 		panel2.add(textfield, BorderLayout.CENTER);
@@ -79,7 +83,18 @@ class SetUpGUI extends JFrame implements ActionListener
 	/** This sets up the tab in the GUI in order to be able to add more nodes or edit the current nodes */
 	private void NodeTab()
 	{
+		JLabel label2 = new JLabel("Node:\t Coord:");
 		
+		label2.setBounds(WIDTH * 3/4 + 15, 100, 80, 50);
+		
+		addNodeButtonHeightL += 30;
+		
+		//button.setBounds(WIDTH * 3/4 + 20, addNodeButtonHeightL, 20, 15);
+		
+		panel1.add(label2);
+		//panel1.add(button);
+		
+		pack();
 	}
 	
 	/** This sets up the tab to make the connections between each tab */
@@ -103,10 +118,10 @@ class SetUpGUI extends JFrame implements ActionListener
 	public void actionPerformed(ActionEvent e)
 	{
 		if(e.getActionCommand() == "AddNode")
-			numclicks++;
+			NodeTab();
 		
 		else if(e.getActionCommand() == "Test")
-			System.out.println(numclicks);
+			ForcesTab();
 		
 		else
 			System.out.print("stupid");
