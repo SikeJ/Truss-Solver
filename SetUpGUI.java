@@ -1,6 +1,6 @@
 import javax.swing.*;
 import java.awt.Dimension;
-import java.awt.BorderLayout;
+import java.awt.*;
 import java.awt.event.*;
 
 class SetUpGUI extends JFrame implements ActionListener
@@ -15,7 +15,7 @@ class SetUpGUI extends JFrame implements ActionListener
 	
 	private int numclicks;
 	
-	private int addNodeButtonHeightL = 100;
+	private int addedNodeH = 100;
 	
 	//creates new objects of the java swing class to make the buttons and whatnot
 	//creates the panels for each tab used in the GUI
@@ -30,6 +30,9 @@ class SetUpGUI extends JFrame implements ActionListener
 	JButton button2 = new JButton("Testing");
 	JTextField textfield = new JTextField("Hello, how are you today?");
 	JTextArea textarea = new JTextArea("How\tare\tyou\t?");
+	
+	//sets up the constraint object for the panels
+	GridBagConstraints constraints = new GridBagConstraints();
 	
 	
 	//creates the labels
@@ -57,16 +60,40 @@ class SetUpGUI extends JFrame implements ActionListener
 		button2.addActionListener(this);
 		button2.setActionCommand("Test");
 		
-		button.setBounds(WIDTH * 3/4 + 20, addNodeButtonHeightL, 20, 15);
+		//sets the layout of the different panel & tabs
+		panel1.setLayout(new GridBagLayout());
+		panel2.setLayout(new GridBagLayout());
+		panel3.setLayout(new GridBagLayout());
+		panel4.setLayout(new GridBagLayout());
 		
-		//adds the different panels & tabs onto the frame
-		panel1.add(button, BorderLayout.CENTER);
-		panel2.add(textfield, BorderLayout.CENTER);
-		panel3.add(textarea, BorderLayout.CENTER);
-		panel4.add(label, BorderLayout.CENTER);
-		panel5.add(button2, BorderLayout.CENTER);
 		
-		//creates the tabs
+		
+		//changes and sets the grid constraints for each button/textfield/textarea
+		//for the AddNode button
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		constraints.gridwidth = 4;
+		constraints.anchor = GridBagConstraints.NORTH;
+		
+		panel1.add(button, constraints);
+		
+		//for the second panel
+		
+		panel2.add(textfield, constraints);
+		
+		//for the third
+		
+		panel3.add(textarea, constraints);
+		
+		//the fourth
+		
+		panel4.add(label, constraints);
+		
+		//the fifth
+		
+		panel5.add(button2, constraints);
+		
+		//creates the tabs and adds the panels onto them
 		tabs.addTab("Nodes", null, panel1, TABNODE);
 		tabs.addTab("Connections", null, panel2, TABCONNECTIONS);
 		tabs.addTab("Forces", null, panel3, TABFORCE);
@@ -74,7 +101,7 @@ class SetUpGUI extends JFrame implements ActionListener
 		
 		tabs.setPreferredSize(new Dimension(WIDTH * 1/4, HEIGHT));
 		panel5.setPreferredSize(new Dimension(WIDTH * 3/4, HEIGHT));
-		tabs.setLocation(WIDTH/2, 0);
+		tabs.setLocation(WIDTH *3/4, 0);
 		add(tabs, BorderLayout.EAST);
 		add(panel5, BorderLayout.WEST);
 		setVisible(true);
@@ -83,16 +110,10 @@ class SetUpGUI extends JFrame implements ActionListener
 	/** This sets up the tab in the GUI in order to be able to add more nodes or edit the current nodes */
 	private void NodeTab()
 	{
-		JLabel label2 = new JLabel("Node:\t Coord:");
+		JLabel label2 = new JLabel("Node:    Coord:");
 		
-		label2.setBounds(WIDTH * 3/4 + 15, 100, 80, 50);
-		
-		addNodeButtonHeightL += 30;
-		
-		//button.setBounds(WIDTH * 3/4 + 20, addNodeButtonHeightL, 20, 15);
-		
-		panel1.add(label2);
-		//panel1.add(button);
+		constraints.gridy += 1;
+		panel1.add(label2, constraints);
 		
 		pack();
 	}
