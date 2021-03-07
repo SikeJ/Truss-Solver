@@ -112,7 +112,9 @@ class SetUpGUI extends JFrame implements ActionListener
 	/** This sets up the tab in the GUI in order to be able to add more nodes or edit the current nodes */
 	private void NodeTab()
 	{
-		JLabel label2 = new JLabel("Node " + numclicks);
+		Nodes newnode = new Nodes(numclicks);
+		
+		JLabel label2 = new JLabel("Node " + newnode.getName());
 		JLabel label3 = new JLabel("\tCoord:");
 		JTextField text2 = new JTextField("Enter here:");
 		
@@ -120,8 +122,8 @@ class SetUpGUI extends JFrame implements ActionListener
 		panel1.add(label2, constraints);
 		//constraints.gridx += 1;
 		//panel1.add(label3, constraints);
-		constraints.gridx += 1;
-		panel1.add(text2, constraints);
+		
+		//panel1.add(text2, constraints.RELATIVE);
 		
 		
 		numclicks++;
@@ -137,7 +139,7 @@ class SetUpGUI extends JFrame implements ActionListener
 	/** This sets up the tab to show the forces in each member, and to add a force onto the truss */
 	private void ForcesTab()
 	{
-		
+		System.out.println("How does this work?" + numclicks);
 	}
 	
 	/** This sets up the tab to look at the factor of safety in each member */

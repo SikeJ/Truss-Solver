@@ -1,22 +1,21 @@
-class Testing
+public class GaussElim
 {
-	public static void main(String[] args)
+	private float[] xyz;
+	
+	public GaussElim(float[][] coeffs, float[] ans)
 	{
-		//int[][] x = new int[3][3];
-		//int[] ans = new int[x.length];
-		
-		float[][] x = {{0, 21}, {1, 1}};
-		float[] ans = {239, 73};
-		
-		float[] maybe = GaussElim(x,ans);
-		
-		for(int i = 0; i < maybe.length; i++)
-			System.out.println(maybe[i]);		
-		
+		this.xyz = GaussPivot(coeffs, ans);
 	}
 	
+	/** This returns the values of the variables that were calculated */
+	public float[] getValues()
+	{
+		return this.xyz;
+	}
+	
+	
 	/** This solves a system of equations using Gauss with partial pivoting */
-	private static float[] GaussElim(float[][] x, float[] ans)
+	private static float[] GaussPivot(float[][] x, float[] ans)
 	{
 		/*
 		This solves a system of equations that are formatted in the form:
@@ -105,48 +104,3 @@ class Testing
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
