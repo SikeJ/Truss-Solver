@@ -70,7 +70,7 @@ class Testing
 				ans[m] -= factor*ans[i];
 			}
 			
-			//PrintArray(x,ans);
+			PrintArray(x,ans);
 			
 		}
 		

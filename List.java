@@ -19,7 +19,7 @@ public class List<TESTINGS> {
 	public void append(TESTINGS value)
 	{
 		// creates a temp value to add a char to the end of the linked list
-		temp = new Node(value);
+		temp = new Node<TESTINGS>(value);
 		
 		//Case 0 the head and tail are the same thing
 		if (head == null)
@@ -41,7 +41,7 @@ public class List<TESTINGS> {
 	public void prepend(TESTINGS value)
 	{
 		// temp variable to swap the linked list head/tail 
-		temp = new Node(value);
+		temp = new Node<TESTINGS>(value);
 		
 		//Case 0 everything is the same
 		if (head == null)
@@ -51,7 +51,7 @@ public class List<TESTINGS> {
 		//	sets the next and prev values properly so the linked list is doubly linked
 		else
 		{ 
-			Node temp2 = head;
+			Node<TESTINGS> temp2 = head;
 			head = temp;
 			
 			head.setNext(temp2);
@@ -85,18 +85,14 @@ public class List<TESTINGS> {
 			// if the position is the same as the size  set the new tail
 			if(position + 1 == size)
 			{
-				Node temp2 = tail;
-				temp2 = null;
 				tail = temp;
 				tail.setNext(null);
 			}
 			
 			// if the position is in the middle use temp values to delete the desired position
 			else
-			{				
-				Node temp2 = temp.getNext().getNext();
 				temp.setNext(temp.getNext().getNext());
-			}
+
 			// decrement the size since something is being deleted
 			size--;
 		}
@@ -152,7 +148,7 @@ public class List<TESTINGS> {
 	public void printBackwards() 
 	{
 		// Nodes used to traverse the linked list from head to tail
-		Node cur = head; // called "cur" to stand for the "current" Nodes I am printing
+		Node<TESTINGS> cur = head; // called "cur" to stand for the "current" Nodes I am printing
     
 		// as long as cur is not null, keep traversing
 		while (cur != null)
@@ -170,7 +166,7 @@ class Node<TESTING> {
   // put all fields from Node class here
   // initializes the instance variables for the Node class
 	private TESTING data;
-	private Node next;
+	private Node<TESTING> next;
   
   // put all methods from Node class here
   /** This sets the initialized variables to the inputted values */
@@ -193,13 +189,13 @@ class Node<TESTING> {
 	}
 	
 	/** This returns the next list instance */
-	public Node getNext()
+	public Node<TESTING> getNext()
 	{
 		return next;
 	}
 	
 	/** This allows the next list instance to be set in different classes */
-	public void setNext(Node next)
+	public void setNext(Node<TESTING> next)
 	{
 		this.next = next;
 	}

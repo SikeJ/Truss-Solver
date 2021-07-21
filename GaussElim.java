@@ -69,7 +69,7 @@ public class GaussElim
 				ans[m] -= factor*ans[i];
 			}
 			
-			//PrintArray(x,ans);
+			PrintArray(x,ans);
 			
 		}
 		
