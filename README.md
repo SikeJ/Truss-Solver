@@ -1,7 +1,6 @@
 # Truss-Solver
 This is a GUI that can solve any truss put into it
-
-
+Making sure that these changes are committed
 
 #Useful links for java swing and other stuff
 https://docs.oracle.com/javase/7/docs/api/javax/swing/JFrame.html
