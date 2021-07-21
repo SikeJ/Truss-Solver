@@ -2,7 +2,7 @@ class Main
 {
 	public static void main(String [] args)
 	{
-		//SetUpGUI gui = new SetUpGUI();
+		SetUpGUI gui = new SetUpGUI();
 		
 		Nodes node1 = new Nodes(0);
 		Nodes node2 = new Nodes(1);
