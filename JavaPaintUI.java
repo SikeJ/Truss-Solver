@@ -6,7 +6,7 @@ import javax.swing.border.*;
 class JavaPaintUI extends JFrame {
 
     private int tool = 1;
-    int currentX, currentY, oldX, oldY;
+    public int currentX, currentY, oldX, oldY;
 
     public JavaPaintUI() {
         initComponents();
@@ -45,8 +45,8 @@ class JavaPaintUI extends JFrame {
             currentY = evt.getY();
             oldX = currentX;
             oldY = currentY;
-            System.out.println(currentX + " " + currentY);
-            System.out.println("PEN!!!!");
+            // System.out.println(currentX + " " + currentY);
+            // System.out.println("PEN!!!!");
         }
     }
 
@@ -59,7 +59,7 @@ class JavaPaintUI extends JFrame {
 
     //mouse released//
     private void jPanel2MouseReleased(MouseEvent evt) {
-        if (tool == 2) {
+        if (tool == 1) {
             currentX = evt.getX();
             currentY = evt.getY();
             System.out.println("line!!!! from" + oldX + "to" + currentX);
@@ -95,6 +95,7 @@ class JavaPaintUI extends JFrame {
 
             g.drawString("BLAH", 20, 20);
             g.drawRect(200, 200, 200, 200);
+            g.drawOval(currentX+25, currentY+25, 50, 50);
         }
     }
 }
