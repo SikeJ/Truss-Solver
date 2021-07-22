@@ -1,11 +1,11 @@
 /** Linked List implementation of our List abstract data type */
-public class List<TESTINGS> {
+public class List<L> {
   // put all fields from ListAsLinkedList class here
   // sets the instance variables for the LinkedList class
-	private Node<TESTINGS> tail;
-	private Node<TESTINGS> head;
+	private Node<L> tail;
+	private Node<L> head;
 	private int size;
-	private Node<TESTINGS> temp;
+	private Node<L> temp;
   
   // put all methods from ListAsLinkedList class here
   /** This initializes the instance variables */
@@ -16,10 +16,10 @@ public class List<TESTINGS> {
 	}
 	
 	/** Adds the given value to the end of the list */
-	public void append(TESTINGS value)
+	public void append(L value)
 	{
 		// creates a temp value to add a char to the end of the linked list
-		temp = new Node<TESTINGS>(value);
+		temp = new Node<L>(value);
 		
 		//Case 0 the head and tail are the same thing
 		if (head == null)
@@ -38,10 +38,10 @@ public class List<TESTINGS> {
 	}
 	
 	/** Adds the given value to the beginning of the list */
-	public void prepend(TESTINGS value)
+	public void prepend(L value)
 	{
 		// temp variable to swap the linked list head/tail 
-		temp = new Node<TESTINGS>(value);
+		temp = new Node<L>(value);
 		
 		//Case 0 everything is the same
 		if (head == null)
@@ -51,7 +51,7 @@ public class List<TESTINGS> {
 		//	sets the next and prev values properly so the linked list is doubly linked
 		else
 		{ 
-			Node<TESTINGS> temp2 = head;
+			Node<L> temp2 = head;
 			head = temp;
 			
 			head.setNext(temp2);
@@ -107,7 +107,7 @@ public class List<TESTINGS> {
 	}
 	
 	/** Retrieves the value at the given position (0-based) */
-	public TESTINGS getValueAt(int position)
+	public L getValueAt(int position)
 	{
 		// starts at the head of the linked list and goes through the list until it is at the position
 		temp = head;
@@ -124,7 +124,7 @@ public class List<TESTINGS> {
 	/** Searches for the FIRST occurence of a given value in our list.
 		* If found, it returns the position of that value.
 		* If not found, it returns -1 */
-	public int positionOf(TESTINGS value)
+	public int positionOf(L value)
 	{
 		// sets a value if the position is not found
 		int found = -1;
@@ -148,7 +148,7 @@ public class List<TESTINGS> {
 	public void printBackwards() 
 	{
 		// Nodes used to traverse the linked list from head to tail
-		Node<TESTINGS> cur = head; // called "cur" to stand for the "current" Nodes I am printing
+		Node<L> cur = head; // called "cur" to stand for the "current" Nodes I am printing
     
 		// as long as cur is not null, keep traversing
 		while (cur != null)
@@ -162,40 +162,40 @@ public class List<TESTINGS> {
 }
 
 /** A linked list node for our linked list */
-class Node<TESTING> {
+class Node<N> {
   // put all fields from Node class here
   // initializes the instance variables for the Node class
-	private TESTING data;
-	private Node<TESTING> next;
+	private N data;
+	private Node<N> next;
   
   // put all methods from Node class here
   /** This sets the initialized variables to the inputted values */
-	public Node(TESTING data)
+	public Node(N data)
 	{
 		this.data = data;
 		this.next = null;
 	}
 	
 	/** This returns the data held by an instance */
-	public TESTING getData()
+	public N getData()
 	{
 		return data;
 	}
 	
 	/** This allows the data to be set from different classes */
-	public void setData(TESTING data)
+	public void setData(N data)
 	{
 		this.data = data;
 	}
 	
 	/** This returns the next list instance */
-	public Node<TESTING> getNext()
+	public Node<N> getNext()
 	{
 		return next;
 	}
 	
 	/** This allows the next list instance to be set in different classes */
-	public void setNext(Node<TESTING> next)
+	public void setNext(Node<N> next)
 	{
 		this.next = next;
 	}
