@@ -4,6 +4,7 @@ class Main
 	{
 		SetUpGUI gui = new SetUpGUI();
 		
+		System.out.println(gui.TABSAFETY);
 		Nodes node1 = new Nodes(0);
 		Nodes node2 = new Nodes(1);
 		

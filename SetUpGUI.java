@@ -15,7 +15,7 @@ class SetUpGUI extends JFrame implements ActionListener
 	
 	private int numclicks;
 	
-	private int addedNodeH = 100;
+	// private int addedNodeH = 100;
 	
 	//creates new objects of the java swing class to make the buttons and whatnot
 	//creates the panels for each tab used in the GUI
@@ -34,7 +34,7 @@ class SetUpGUI extends JFrame implements ActionListener
 	//sets up the constraint object for the panels
 	GridBagConstraints constraints = new GridBagConstraints();
 	
-	private char [] letters = {'a','b','c','d','e','f','g'};
+	// private char [] letters = {'a','b','c','d','e','f','g'};
 	
 	
 	//creates the labels
@@ -68,7 +68,8 @@ class SetUpGUI extends JFrame implements ActionListener
 		panel3.setLayout(new GridBagLayout());
 		panel4.setLayout(new GridBagLayout());
 		
-		
+		SafetyTab();
+		ConnectionsTab();
 		
 		//changes and sets the grid constraints for each button/textfield/textarea
 		//for the AddNode button
@@ -115,8 +116,8 @@ class SetUpGUI extends JFrame implements ActionListener
 		Nodes newnode = new Nodes(numclicks);
 		
 		JLabel label2 = new JLabel("Node " + newnode.getName());
-		JLabel label3 = new JLabel("\tCoord:");
-		JTextField text2 = new JTextField("Enter here:");
+		// JLabel label3 = new JLabel("\tCoord:");
+		// JTextField text2 = new JTextField("Enter here:");
 		
 		constraints.gridy += 1;
 		panel1.add(label2, constraints);
@@ -133,7 +134,7 @@ class SetUpGUI extends JFrame implements ActionListener
 	/** This sets up the tab to make the connections between each tab */
 	private void ConnectionsTab()
 	{
-		
+		return;
 	}
 	
 	/** This sets up the tab to show the forces in each member, and to add a force onto the truss */
@@ -145,7 +146,7 @@ class SetUpGUI extends JFrame implements ActionListener
 	/** This sets up the tab to look at the factor of safety in each member */
 	private void SafetyTab()
 	{
-		
+		return;
 	}
 	
 	public void actionPerformed(ActionEvent e)
