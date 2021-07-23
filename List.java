@@ -2,10 +2,10 @@
 public class List<L> {
   // put all fields from ListAsLinkedList class here
   // sets the instance variables for the LinkedList class
-	private Node<L> tail;
-	private Node<L> head;
+	private Link<L> tail;
+	private Link<L> head;
 	private int size;
-	private Node<L> temp;
+	private Link<L> temp;
   
   // put all methods from ListAsLinkedList class here
   /** This initializes the instance variables */
@@ -19,7 +19,7 @@ public class List<L> {
 	public void append(L value)
 	{
 		// creates a temp value to add a char to the end of the linked list
-		temp = new Node<L>(value);
+		temp = new Link<L>(value);
 		
 		//Case 0 the head and tail are the same thing
 		if (head == null)
@@ -41,7 +41,7 @@ public class List<L> {
 	public void prepend(L value)
 	{
 		// temp variable to swap the linked list head/tail 
-		temp = new Node<L>(value);
+		temp = new Link<L>(value);
 		
 		//Case 0 everything is the same
 		if (head == null)
@@ -51,7 +51,7 @@ public class List<L> {
 		//	sets the next and prev values properly so the linked list is doubly linked
 		else
 		{ 
-			Node<L> temp2 = head;
+			Link<L> temp2 = head;
 			head = temp;
 			
 			head.setNext(temp2);
@@ -147,8 +147,8 @@ public class List<L> {
 	
 	public void printBackwards() 
 	{
-		// Nodes used to traverse the linked list from head to tail
-		Node<L> cur = head; // called "cur" to stand for the "current" Nodes I am printing
+		// Links used to traverse the linked list from head to tail
+		Link<L> cur = head; // called "cur" to stand for the "current" Links I am printing
     
 		// as long as cur is not null, keep traversing
 		while (cur != null)
@@ -161,16 +161,16 @@ public class List<L> {
   
 }
 
-/** A linked list node for our linked list */
-class Node<N> {
-  // put all fields from Node class here
-  // initializes the instance variables for the Node class
+/** A linked list Link for our linked list */
+class Link<N> {
+  // put all fields from Link class here
+  // initializes the instance variables for the Link class
 	private N data;
-	private Node<N> next;
+	private Link<N> next;
   
-  // put all methods from Node class here
+  // put all methods from Link class here
   /** This sets the initialized variables to the inputted values */
-	public Node(N data)
+	public Link(N data)
 	{
 		this.data = data;
 		this.next = null;
@@ -189,13 +189,13 @@ class Node<N> {
 	}
 	
 	/** This returns the next list instance */
-	public Node<N> getNext()
+	public Link<N> getNext()
 	{
 		return next;
 	}
 	
 	/** This allows the next list instance to be set in different classes */
-	public void setNext(Node<N> next)
+	public void setNext(Link<N> next)
 	{
 		this.next = next;
 	}

@@ -1,32 +1,31 @@
 class Main
 {
-	public static void main(String [] args)
+		public static void main(String [] args)
 	{
-		SetUpGUI gui = new SetUpGUI();
+		Nodes node1 = new Nodes('A', 0, 0);
+		Nodes node2 = new Nodes('B', 10, 0);
+		Nodes node3 = new Nodes('C', 5, 5);
 		
-		System.out.println(gui.TABSAFETY);
-		Nodes node1 = new Nodes(0);
-		Nodes node2 = new Nodes(1);
-		
-		Members member = new Members(node1, node2);
+		Beam beam = new Beam(node1, node2);
+		Beam beam2 = new Beam(node1, node3);
+		Beam beam3 = new Beam(node2, node3);
+		Force force = new Force(node3, 100.0, "lbf");
+
+		Beam[] beams = {beam, beam2, beam3};
 
 		
-		float[][] x = {{0, 21}, {1, 1}};
-		float[] ans = {239, 73};
 		
-		System.out.println(member.getName());
-		System.out.println(member.getDX());
-		System.out.println(member.getDY());
-		System.out.println(member.getHYP());
-		System.out.println(member.getForce());
-		System.out.println(member.getNodes()[1].getName());
-		
-		GaussElim maybe = new GaussElim(x,ans);
-		
-		float[] test = maybe.getValues();
-		
-		for(int i = 0; i < test.length; i++)
-			System.out.println(test[i]);	
-		
+		/*
+		for(int i = 0; i < beams.length; i++)
+		{
+			System.out.println(beams[i].getName());
+			System.out.println(beams[i].getDX());
+			System.out.println(beams[i].getDY());
+			System.out.println(beams[i].getHYP());
+			System.out.println(beams[i].getForce());
+			System.out.println(beams[i].getNodes()[1].getName());
+			System.out.println();
+		}
+		*/		
 	}
 }

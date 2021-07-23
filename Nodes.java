@@ -2,17 +2,21 @@ class Nodes
 {
 	//setup private variables for the node class
 	private char name;
-	private List<Character> connections;
-	private float x;
-	private float y;
+	private List<Nodes> connections;
+	private double x;
+	private double y;
+	private Double nodeForce;
 	
 	
 	/** Constructor for the node class */
-	public Nodes(int clicks)
+	public Nodes(char name, double x, double y)
 	{
 		//Sets up a node  
-		this.name = (char) (65 + clicks);
-		this.connections = new List<Character>();
+		this.name = name;
+		this.x = x;
+		this.y = y;
+		this.nodeForce = null;
+		this.connections = new List<Nodes>();
 	}
 	
 	public char getName()
@@ -20,38 +24,48 @@ class Nodes
 		return this.name;
 	}
 	
-	public List<Character> getConnections()
+	public List<Nodes> getConnections()
 	{
 		return this.connections;
 	}
 	
-	public float[] getCoords()
+	public double[] getCoords()
 	{
-		float[] coords = {this.x, this.y};
+		double[] coords = {this.x, this.y};
 		return coords;
 	}
 	
-	public float getX()
+	public double getX()
 	{
 		return this.x;
 	}
 	
-	public float getY()
+	public double getY()
 	{
 		return this.y;
 	}
+
+	public Double getNodeForce()
+	{
+		return nodeForce;
+	}
 	
-	public void setX(float xval)
+	public void setX(double xval)
 	{
 		this.x = xval;
 	}
 	
-	public void setY(float yval)
+	public void setY(double yval)
 	{
 		this.y = yval;
 	}
+
+	public void setNodeForce(double force)
+	{
+		this.nodeForce = force;
+	}
 	
-	public void addConnect(char node)
+	public void addConnect(Nodes node)
 	{
 		this.connections.append(node);
 	}
