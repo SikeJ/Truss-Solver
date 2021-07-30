@@ -59,10 +59,4 @@ class Beam
 		Nodes[] ends = {node1, node2};
 		return ends;
 	}
-
-	/** Returns whether the beam is a support beam or not */
-	public Boolean getSupport()
-	{
-		return this.support;
-	}
 }
