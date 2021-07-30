@@ -13,19 +13,16 @@ class Main
 
 		Beam[] beams = {beam, beam2, beam3};
 
-		
-		
-		/*
-		for(int i = 0; i < beams.length; i++)
+
+		/* for(int i = 0; i < beams.length; i++)
 		{
 			System.out.println(beams[i].getName());
-			System.out.println(beams[i].getDX());
-			System.out.println(beams[i].getDY());
-			System.out.println(beams[i].getHYP());
-			System.out.println(beams[i].getForce());
-			System.out.println(beams[i].getNodes()[1].getName());
+			System.out.println("DX: " + beams[i].getDX());
+			System.out.println("DY: " + beams[i].getDY());
+			System.out.println("L: " + beams[i].getHYP());
+			System.out.println("F: " + beams[i].getForce());
 			System.out.println();
 		}
-		*/		
+		 */
 	}
 }

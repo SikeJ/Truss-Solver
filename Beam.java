@@ -16,8 +16,8 @@ class Beam
 		node1.addConnect(node2);
 		node2.addConnect(node1);
 		
-		this.dx = node1.getX() - node2.getX();
-		this.dy = node1.getY() - node2.getY();
+		this.dx = Math.abs(node1.getX() - node2.getX());
+		this.dy = Math.abs(node1.getY() - node2.getY());
 		this.force = 100.0;
 		this.hyp = (double)Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
 		this.name = "" + node1.getName() + node2.getName();
