@@ -22,35 +22,47 @@ class Beam
 		this.hyp = (double)Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
 		this.name = "" + node1.getName() + node2.getName();
 	}
-	
+
+	/** Returns the name of the Beam */
 	public String getName()
 	{
 		return this.name;
 	}
 	
+	/** Returns the force the beam is carrying */
 	public double getForce()
 	{
 		return this.force;
 	}
 	
+	/** Returns the change in the X coordinate across the end points of the beam */
 	public double getDX()
 	{
 		return this.dx;
 	}
 	
+	/** Returns the change in the Y coordinate across the end points of the beam */
 	public double getDY()
 	{
 		return this.dy;
 	}
 	
+	/** Returns the length of the beam */
 	public double getHYP()
 	{
 		return this.hyp;
 	}
 	
+	/** Returns the nodes that the beam is connected to */
 	public Nodes[] getNodes()
 	{
 		Nodes[] ends = {node1, node2};
 		return ends;
+	}
+
+	/** Returns whether the beam is a support beam or not */
+	public Boolean getSupport()
+	{
+		return this.support;
 	}
 }

@@ -14,6 +14,13 @@ public class List<L> {
 		temp = head = tail = null;
 		size = 0;
 	}
+
+	/** Creates a List with a singular value in it */
+	public List(L item)
+	{
+		head = tail = new Link<L>(item);
+		size = 1;
+	}
 	
 	/** Adds the given value to the end of the list */
 	public void append(L value)
