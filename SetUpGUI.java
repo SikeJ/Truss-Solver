@@ -113,14 +113,14 @@ class SetUpGUI extends JFrame implements ActionListener
 	/** This sets up the tab in the GUI in order to be able to add more nodes or edit the current nodes */
 	private void NodeTab()
 	{
-		Nodes newnode = new Nodes(numclicks);
+		//Nodes newnode = new Nodes(numclicks, );
 		
-		JLabel label2 = new JLabel("Node " + newnode.getName());
+		//JLabel label2 = new JLabel("Node " + newnode.getName());
 		// JLabel label3 = new JLabel("\tCoord:");
 		// JTextField text2 = new JTextField("Enter here:");
 		
 		constraints.gridy += 1;
-		panel1.add(label2, constraints);
+		//panel1.add(label2, constraints);
 		//constraints.gridx += 1;
 		//panel1.add(label3, constraints);
 		
