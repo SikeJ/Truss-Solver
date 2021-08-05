@@ -18,7 +18,7 @@ class Beam
 		
 		this.dx = Math.abs(node1.getX() - node2.getX());
 		this.dy = Math.abs(node1.getY() - node2.getY());
-		this.force = 100.0;
+		this.force = null;
 		this.hyp = (double)Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
 		this.name = "" + node1.getName() + node2.getName();
 	}
@@ -28,9 +28,15 @@ class Beam
 	{
 		return this.name;
 	}
+
+	/** Sets the force that the beam carries */
+	public void setForce(double force)
+	{
+		this.force = force;
+	}
 	
 	/** Returns the force the beam is carrying */
-	public double getForce()
+	public Double getForce()
 	{
 		return this.force;
 	}
