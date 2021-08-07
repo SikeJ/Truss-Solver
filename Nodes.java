@@ -2,7 +2,7 @@ class Nodes
 {
 	//setup private variables for the node class
 	private char name;
-	private List<Nodes> connections;
+	private List<Beam> connections;
 	private double x;
 	private double y;
 	private Double nodeForce;
@@ -18,7 +18,7 @@ class Nodes
 
 		//Sets the reaction force at the Node to null and starts a list of connections
 		this.nodeForce = null;
-		this.connections = new List<Nodes>();
+		this.connections = new List<Beam>();
 
 		//sets whether the Node will have reaction forces
 		this.support = support;
@@ -31,7 +31,7 @@ class Nodes
 	}
 	
 	/** Returns a list of the other Nodes that are connected to the current node */
-	public List<Nodes> getConnections()
+	public List<Beam> getConnections()
 	{ 
 		return this.connections;
 	}
@@ -80,15 +80,15 @@ class Nodes
 	}
 	
 	/** Adds a Node to thee connection list */
-	public void addConnect(Nodes node)
+	public void addConnect(Beam beam)
 	{
-		this.connections.append(node);
+		this.connections.append(beam);
 	}
 
 	/** Removes a connenction from the list */
-	public void removeConnet(Nodes node)
+	public void removeConnet(Beam beam)
 	{
-		this.connections.deleteAt(connections.positionOf(node));
+		this.connections.deleteAt(connections.positionOf(beam));
 	}
 
 	/** Returns whether the Node is supported */

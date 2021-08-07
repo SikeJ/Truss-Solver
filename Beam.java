@@ -13,8 +13,8 @@ class Beam
 		this.node1 = node1;
 		this.node2 = node2;
 
-		node1.addConnect(node2);
-		node2.addConnect(node1);
+		node1.addConnect(this);
+		node2.addConnect(this);
 		
 		this.dx = Math.abs(node1.getX() - node2.getX());
 		this.dy = Math.abs(node1.getY() - node2.getY());

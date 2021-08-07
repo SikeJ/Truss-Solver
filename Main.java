@@ -39,7 +39,12 @@ class Main
 		//Loops through the beams to calculate beam force
 		for(Nodes node:nodes)
 		{
-			Beam[] beams = node.getConnections();
+			List<Beam> beams = node.getConnections();
+			for(int i = 0; i < beams.size(); i++)
+			{
+				Beam test = beams.getValueAt(i);
+				System.out.println("Beam " + test.getName() + " connected to Node " + node.getName());
+			}
 			
 		}
 	}
