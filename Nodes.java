@@ -5,7 +5,7 @@ class Nodes
 	private List<Beam> connections;
 	private double x;
 	private double y;
-	private Double nodeForce;
+	public Force nodeForce;
 	private boolean support;
 	
 	/** Constructor for the Node class */
@@ -17,7 +17,7 @@ class Nodes
 		this.y = y;
 
 		//Sets the reaction force at the Node to null and starts a list of connections
-		this.nodeForce = null;
+		this.nodeForce = new Force(this, null, "lbf");
 		this.connections = new List<Beam>();
 
 		//sets whether the Node will have reaction forces
@@ -58,7 +58,7 @@ class Nodes
 	/** Returns the Force applied at the node if there is any */
 	public Double getNodeForce()
 	{
-		return nodeForce;
+		return this.nodeForce.getForce();
 	}
 	
 	/** Sets the Y coordinate, in case the node wants to be moved */
@@ -74,9 +74,9 @@ class Nodes
 	}
 
 	/** Let's you set the force applied at the Node */
-	public void setNodeForce(double force)
+	public void setNodeForce(Double force)
 	{
-		this.nodeForce = force;
+		this.nodeForce.setForce(force);
 	}
 	
 	/** Adds a Node to thee connection list */
@@ -100,8 +100,10 @@ class Nodes
 	public void printNode()
 	{
 		System.out.println("-------------------------------");
-		System.out.printf("Node: %c\nLocation: (%.1f,%.1f)\nForce: %.2f\nSupport: %b\nBeams: "
-			, this.name, this.x, this.y, this.nodeForce, this.support);
+		System.out.println(this.nodeForce.getForce());
+		System.out.printf("Node: %c\nLocation: (%.1f,%.1f)\nForce: %.2f %s\nSupport: %b\nBeams: "
+			, this.name, this.x, this.y, this.nodeForce.getForce()
+			, this.nodeForce.getUnits(), this.support);
 		String beamsString = "";
 		for(int i = 0; i < this.connections.size(); i++)
 			beamsString += connections.getValueAt(i).getName() + ',';
