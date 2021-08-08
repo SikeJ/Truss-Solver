@@ -86,7 +86,7 @@ class Nodes
 	}
 
 	/** Removes a connenction from the list */
-	public void removeConnet(Beam beam)
+	public void removeConnect(Beam beam)
 	{
 		this.connections.deleteAt(connections.positionOf(beam));
 	}
@@ -95,5 +95,16 @@ class Nodes
 	public boolean getSupport()
 	{
 		return this.support;
+	}
+
+	public void printNode()
+	{
+		System.out.println("-------------------------------");
+		System.out.printf("Node: %c\nLocation: (%.1f,%.1f)\nForce: %.2f\nSupport: %b\nBeams: "
+			, this.name, this.x, this.y, this.nodeForce, this.support);
+		String beamsString = "";
+		for(int i = 0; i < this.connections.size(); i++)
+			beamsString += connections.getValueAt(i).getName() + ',';
+		System.out.print(beamsString + "\b \n");
 	}
 }
