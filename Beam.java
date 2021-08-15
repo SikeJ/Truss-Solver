@@ -13,11 +13,14 @@ class Beam
 		this.node1 = node1;
 		this.node2 = node2;
 
+		node1.unknowns++;
+		node2.unknowns++;
+
 		node1.addConnect(this);
 		node2.addConnect(this);
 		
-		this.dx = node1.getX() - node2.getX();
-		this.dy = node1.getY() - node2.getY();
+		this.dx = (node1.getX() - node2.getX());
+		this.dy = (node1.getY() - node2.getY());
 		this.force = null;
 		this.hyp = (double)Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
 		this.name = "" + node1.getName() + node2.getName();
@@ -33,6 +36,8 @@ class Beam
 	public void setForce(double force)
 	{
 		this.force = force;
+		node1.unknowns--;
+		node2.unknowns--;
 	}
 	
 	/** Returns the force the beam is carrying */
@@ -69,11 +74,26 @@ class Beam
 	/** This sets the 'view' of the Beam to accurately tell which way is positive and negative */
 	public void setView(Nodes node)
 	{
-		if(node != this.node1)
+		if(node == this.node1)
 		{
-			this.dx = this.dx * -1;
-			this.dy = this.dy * -1;
+			this.dx = node1.getX() - node2.getX();
+			this.dy = node1.getY() - node2.getY();
 		}
+		else
+		{
+			this.dx = node2.getX() - node1.getX();
+			this.dy = node2.getY() - node1.getY();
+		}
+	}
+
+	/** Returns the other node attached to the beam */
+	public Nodes getOtherNode(Nodes node)
+	{
+		if(node == this.node1)
+			return this.node2;
+
+		else
+			return this.node1;
 	}
 
 	/** Prints all of the beams information out */

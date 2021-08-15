@@ -25,6 +25,7 @@ class Main
 		appliedForces.append(node4.nodeForce);
 		appliedForces.append(node5.nodeForce);
 		Nodes[] nodes = {node1, node2, node3, node4, node5};
+		Beam[] beamed = {beam, beam2, beam3, beam4, beam5, beam6, beam7};
 		
 
 		Nodes[] supports = {node1, node2};
@@ -49,13 +50,15 @@ class Main
 		}
 
 		//Starts a stack to perform a depth first search to try and calculate everything
-		Stack<Nodes> stackDepth = new Stack<Nodes>();
+		Stack<Nodes> stack = new Stack<Nodes>();
 		boolean[] seenList = new boolean[nodes.length];
+		seenList[node1.getName() - 'A'] = true;
 
-		stackDepth.push(node1);
-		while(!stackDepth.isEmpty())
+		stack.push(node1);
+		int whileTrace = 0;
+		while(!stack.isEmpty())
 		{
-			Nodes node = stackDepth.pop();
+			Nodes node = stack.peek();
 
 			int noForce = 0;
 			List<Integer> beamPosition = new List<Integer>();
@@ -63,6 +66,18 @@ class Main
 			for(int i = 0; i < beams.size(); i++)
 			{
 				Beam test = beams.getValueAt(i);
+
+				Nodes nodeT = test.getOtherNode(node);
+
+				for(int f = 0; f < nodes.length; f++)
+				{
+					if(!seenList[f])
+					{
+						seenList[f] = true;
+						stack.push(nodes[f]);
+					}
+				}
+				
 				if(test.getForce() == null)
 				{
 					noForce++;
@@ -70,9 +85,12 @@ class Main
 				}
 			}
 
+			System.out.println("Switching at Node: " + node.getName());
 			switch(noForce)
 			{
 				case 0:
+					System.out.println("Popping");
+					stack.pop();
 					break;
 
 				case 1:
@@ -88,7 +106,7 @@ class Main
 							anss += curBeam.getForce() * curBeam.getDX() / curBeam.getHYP();
 						}
 					}
-					double realans = anss * testB.getHYP() / testB.getDX();
+					double realans = (anss * testB.getHYP() / testB.getDX());
 					testB.setForce(realans);
 					break;
 
@@ -100,8 +118,10 @@ class Main
 					{
 						Beam curBeam = beams.getValueAt(beamPosition.getValueAt(pos));
 						curBeam.setView(node);
-						variables[0][pos] = curBeam.getDX() / curBeam.getHYP();
-						variables[1][pos] = curBeam.getDY() / curBeam.getHYP();
+						System.out.println(node.getName());
+						curBeam.printBeam();
+						variables[0][pos] = (curBeam.getDX() / curBeam.getHYP());
+						variables[1][pos] = (curBeam.getDY() / curBeam.getHYP());
 						bpos[pos] = beamPosition.getValueAt(pos);
 					}
 					double[] answers = {0.0, 0.0};
@@ -111,8 +131,8 @@ class Main
 						{
 							Beam curBeam = beams.getValueAt(j);
 							curBeam.setView(node);
-							answers[0] -= curBeam.getDX() / curBeam.getHYP();
-							answers[1] -= curBeam.getDY() / curBeam.getHYP();
+							answers[0] -= (curBeam.getDX() / curBeam.getHYP());
+							answers[1] -= (curBeam.getDY() / curBeam.getHYP());
 						}
 					}
 					answers[1] -= node.getNodeForce();
@@ -127,8 +147,17 @@ class Main
 					break;
 
 				default:
-					System.out.println("There's more then 2 missing forces, can't solve atm");
+					System.out.println("There's more then 2 missing forces, can't solve with this method");
 			}
+			whileTrace++;
 		}
+		System.out.println(whileTrace);
+		
+		for(Nodes nodeJ:nodes)
+			nodeJ.printNode();
+
+		for(Beam beamJ:beamed)
+			beamJ.printBeam();
+			
 	}
 }

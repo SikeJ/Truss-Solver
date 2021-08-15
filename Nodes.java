@@ -7,6 +7,7 @@ class Nodes
 	private double y;
 	public Force nodeForce;
 	private boolean support;
+	public int unknowns;
 	
 	/** Constructor for the Node class */
 	public Nodes(char name, double x, double y, boolean support)
@@ -20,6 +21,8 @@ class Nodes
 		this.nodeForce = new Force(this, null, "lbf");
 		this.connections = new List<Beam>();
 
+		//Sets whether this node is counting the missing force acting on it as an unknown
+		this.unknowns = support ? 1 : 0;
 		//sets whether the Node will have reaction forces
 		this.support = support;
 	}
@@ -77,6 +80,8 @@ class Nodes
 	public void setNodeForce(Double force)
 	{
 		this.nodeForce.setForce(force);
+		if(support)
+			this.unknowns--;
 	}
 	
 	/** Adds a Node to thee connection list */
@@ -109,7 +114,9 @@ class Nodes
 			beamsString += connections.getValueAt(i).getName() + ',';
 		System.out.print(beamsString + "\b \n");
 
+		/*
 		for(int i = 0; i < this.connections.size(); i++)
 			connections.getValueAt(i).printBeam();
+		*/
 	}
 }
