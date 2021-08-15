@@ -48,9 +48,15 @@ class Main
 			supports[i].setNodeForce(testForce/(place.getX() - supports[i].getX()));
 		}
 
-		//Loops through the beams to calculate beam force
-		for(Nodes node:nodes)
+		//Starts a stack to perform a depth first search to try and calculate everything
+		Stack<Nodes> stackDepth = new Stack<Nodes>();
+		boolean[] seenList = new boolean[nodes.length];
+
+		stackDepth.push(node1);
+		while(!stackDepth.isEmpty())
 		{
+			Nodes node = stackDepth.pop();
+
 			int noForce = 0;
 			List<Integer> beamPosition = new List<Integer>();
 			List<Beam> beams = node.getConnections();
@@ -61,7 +67,6 @@ class Main
 				{
 					noForce++;
 					beamPosition.append(i);
-
 				}
 			}
 
@@ -124,9 +129,6 @@ class Main
 				default:
 					System.out.println("There's more then 2 missing forces, can't solve atm");
 			}
-			node.printNode();			
 		}
 	}
-
-	static void solveNode(Nodes[] node)
 }
