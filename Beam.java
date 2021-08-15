@@ -65,4 +65,22 @@ class Beam
 		Nodes[] ends = {node1, node2};
 		return ends;
 	}
+
+	/** This sets the 'view' of the Beam to accurately tell which way is positive and negative */
+	public void setView(Nodes node)
+	{
+		if(node != this.node1)
+		{
+			this.dx = this.dx * -1;
+			this.dy = this.dy * -1;
+		}
+	}
+
+	/** Prints all of the beams information out */
+	public void printBeam()
+	{
+		System.out.println("-------------------------------");
+		System.out.printf("Beam: %s\n\u0394Location: (%.1f,%.1f)\nForce: %.2f lbf\n"
+			, this.name, this.dx, this.dy, this.force);
+	}
 }

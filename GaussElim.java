@@ -1,36 +1,36 @@
 public class GaussElim
 {
-	private float[] xyz;
+	private double[] xyz;
 	
-	public GaussElim(float[][] coeffs, float[] ans)
+	public GaussElim(double[][] coeffs, double[] ans)
 	{
 		this.xyz = GaussPivot(coeffs, ans);
 	}
 	
 	/** This returns the values of the variables that were calculated */
-	public float[] getValues()
+	public double[] getValues()
 	{
 		return this.xyz;
 	}
 	
 	
 	/** This solves a system of equations using Gauss with partial pivoting */
-	private static float[] GaussPivot(float[][] x, float[] ans)
+	private static double[] GaussPivot(double[][] x, double[] ans)
 	{
 		/*
 		This solves a system of equations that are formatted in the form:
 		
-		a*x + b*y + c*z = F
-		d*x + e*y + f*z = G 
-		h*x + i*y + j*z = H
+		a*x + b*y + c*z = D
+		e*x + f*y + g*z = H 
+		i*x + j*y + k*z = L
 		
 		where coeffs is an array of array's of the coeffs of x, y, and z
 		and answers is a column vector of F,G,H 
 		*/
-		float[] xyz = new float[ans.length];
+		double[] xyz = new double[ans.length];
 		int Ldown = x.length;
 		int Lacross = x[0].length;
-		float max;
+		double max;
 		int maxI;
 		
 		//Loops through the system of equations in order to pivot where necessary, and 
@@ -47,10 +47,10 @@ public class GaussElim
 			
 			if(maxI != i)
 			{
-				float[] temp = x[maxI];
+				double[] temp = x[maxI];
 				x[maxI] = x[i];
 				x[i] = temp;
-				float tempa = ans[maxI];
+				double tempa = ans[maxI];
 				ans[maxI] = ans[i];
 				ans[i] = tempa;
 			}
@@ -60,7 +60,7 @@ public class GaussElim
 			//loops through the equations in order to reduce them
 			for(int m = i + 1; m < Ldown; m++)
 			{
-				float factor = x[m][i]/x[i][i];
+				double factor = x[m][i]/x[i][i];
 				//System.out.println(factor);
 				
 				for(int n = 0; n < Lacross; n++)
@@ -76,7 +76,7 @@ public class GaussElim
 		//Goes through the reduced equations and backsolves for the variables xyz
 		for(int b = Lacross - 1; b >= 0; b--)
 		{
-			float sub = ans[b];
+			double sub = ans[b];
 			for(int y = Lacross - 1; y > b; y--)
 				sub -= x[b][y]*xyz[y];
 			
@@ -89,7 +89,7 @@ public class GaussElim
 	
 	
 	/** Prints out the arrays for testing purposes */
-	private static void PrintArray(float[][] x, float[] ans)
+	private static void PrintArray(double[][] x, double[] ans)
 	{
 		int Ldown = x.length;
 		int Lacross = x[0].length;

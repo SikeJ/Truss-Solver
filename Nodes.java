@@ -97,10 +97,10 @@ class Nodes
 		return this.support;
 	}
 
+	/** Prints all of the Node's information */
 	public void printNode()
 	{
 		System.out.println("-------------------------------");
-		System.out.println(this.nodeForce.getForce());
 		System.out.printf("Node: %c\nLocation: (%.1f,%.1f)\nForce: %.2f %s\nSupport: %b\nBeams: "
 			, this.name, this.x, this.y, this.nodeForce.getForce()
 			, this.nodeForce.getUnits(), this.support);
@@ -108,5 +108,8 @@ class Nodes
 		for(int i = 0; i < this.connections.size(); i++)
 			beamsString += connections.getValueAt(i).getName() + ',';
 		System.out.print(beamsString + "\b \n");
+
+		for(int i = 0; i < this.connections.size(); i++)
+			connections.getValueAt(i).printBeam();
 	}
 }
