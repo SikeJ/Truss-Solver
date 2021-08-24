@@ -158,6 +158,8 @@ class Main
 
 		for(Beam beamJ:beamed)
 			beamJ.printBeam();
+
+		System.out.println("Vim is pretty neat! :O");
 			
 	}
 }
