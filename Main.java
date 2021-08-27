@@ -85,7 +85,7 @@ class Main
 				}
 			}
 
-			System.out.println("Switching at Node: " + node.getName());
+			System.out.println("Checking at Node: " + node.getName());
 			switch(noForce)
 			{
 				case 0:
@@ -102,40 +102,56 @@ class Main
 						if(pos != beamI)
 						{
 							Beam curBeam = beams.getValueAt(pos);
+							System.out.println("Beam: " + curBeam.getName());
 							curBeam.setView(node);
 							anss += curBeam.getForce() * curBeam.getDX() / curBeam.getHYP();
 						}
 					}
 					double realans = (anss * testB.getHYP() / testB.getDX());
 					testB.setForce(realans);
+					stack.pop();
 					break;
 
 				case 2:
 					int pos = 0;
 					double[][] variables = new double[2][2];
+					double xforce;
+					double yforce;
 					int[] bpos = new int[2];
 					for(; pos < beamPosition.size(); pos++)
 					{
 						Beam curBeam = beams.getValueAt(beamPosition.getValueAt(pos));
 						curBeam.setView(node);
-						System.out.println(node.getName());
-						curBeam.printBeam();
-						variables[0][pos] = (curBeam.getDX() / curBeam.getHYP());
-						variables[1][pos] = (curBeam.getDY() / curBeam.getHYP());
+						//System.out.println(node.getName());
+						//curBeam.printBeam();
+						System.out.println("Beam:" + curBeam.getName());
+						xforce = curBeam.getDX() / curBeam.getHYP();
+						yforce = curBeam.getDY() / curBeam.getHYP();
+						//System.out.printf("X:%.2f Y:%.2f\n", xforce, yforce);
+						variables[0][pos] = xforce;
+						variables[1][pos] = yforce;
 						bpos[pos] = beamPosition.getValueAt(pos);
+						//System.out.printf("Fun X: %.2f Y: %.2f\n", variables[0][pos]
+						//			, variables[1][pos]);
 					}
 					double[] answers = {0.0, 0.0};
 					for(int j = 0; j < beams.size(); j++)
 					{
+						//System.out.printf("j:%d bpos:%d or %d\n", j, bpos[0], bpos[1]);
 						if(j != bpos[0] && j != bpos[1])
 						{
 							Beam curBeam = beams.getValueAt(j);
 							curBeam.setView(node);
-							answers[0] -= (curBeam.getDX() / curBeam.getHYP());
-							answers[1] -= (curBeam.getDY() / curBeam.getHYP());
+							xforce = curBeam.getDX() / curBeam.getHYP();
+							yforce = curBeam.getDY() / curBeam.getHYP();
+							//System.out.println("Beam:" + curBeam.getName());
+							//System.out.printf("Ans X:%.2f Y:%.2f\n", xforce, yforce);
+							answers[0] -= xforce * curBeam.getForce();
+							answers[1] -= yforce * curBeam.getForce();
 						}
 					}
 					answers[1] -= node.getNodeForce();
+					//System.out.println(answers[1]);
 
 					GaussElim test = new GaussElim(variables, answers);
 					double[] ans = test.getValues();
@@ -143,7 +159,9 @@ class Main
 					{
 						Beam curBeam = beams.getValueAt(beamPosition.getValueAt(pos));
 						curBeam.setForce(ans[pos]);
+						//System.out.printf("Name: %s Force: %.2f\n", curBeam.getName(), ans[pos]);
 					}
+					stack.pop();
 					break;
 
 				default:
@@ -153,13 +171,12 @@ class Main
 		}
 		System.out.println(whileTrace);
 		
+		
 		for(Nodes nodeJ:nodes)
 			nodeJ.printNode();
 
 		for(Beam beamJ:beamed)
-			beamJ.printBeam();
-
-		System.out.println("Vim is pretty neat! :O");
-			
+			beamJ.printBeam();			
+		
 	}
 }

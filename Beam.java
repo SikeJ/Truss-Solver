@@ -74,7 +74,7 @@ class Beam
 	/** This sets the 'view' of the Beam to accurately tell which way is positive and negative */
 	public void setView(Nodes node)
 	{
-		if(node == this.node1)
+		if(node != this.node1)
 		{
 			this.dx = node1.getX() - node2.getX();
 			this.dy = node1.getY() - node2.getY();

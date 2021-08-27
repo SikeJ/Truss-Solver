@@ -39,9 +39,10 @@ public class GaussElim
 		{
 			max = x[i][i];
 			maxI = i;
+			
 			for(int k = i; k < Ldown; k++)
 			{
-				if(max < Math.abs(x[k][i]))
+				if(Math.abs(max) < Math.abs(x[k][i]))
 					maxI = k;
 			}
 			
@@ -68,9 +69,7 @@ public class GaussElim
 					
 				ans[m] -= factor*ans[i];
 			}
-			
-			PrintArray(x,ans);
-			
+			//PrintArray(x,ans);
 		}
 		
 		//Goes through the reduced equations and backsolves for the variables xyz
@@ -98,9 +97,9 @@ public class GaussElim
 		{
 			for(int l = 0; l < Lacross; l++)
 			{
-				System.out.print(x[j][l] + " ");
+				System.out.printf("%.2f ", x[j][l]);
 			}
-			System.out.println(ans[j]);
+			System.out.printf("%.2f\n", ans[j]);
 		}
 	}
 }
