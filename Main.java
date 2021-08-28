@@ -3,9 +3,9 @@ class Main
 	public static void main(String [] args)
 	{
 		Nodes node1 = new Nodes('A', 0, 0, true);
-		Nodes node2 = new Nodes('B', 10, 0, true);
-		Nodes node3 = new Nodes('C', 5, 10, false);
-		Nodes node4 = new Nodes('D', -5, 5, false);
+		Nodes node2 = new Nodes('B', 50, 0, true);
+		Nodes node3 = new Nodes('C', 25, 90, false);
+		Nodes node4 = new Nodes('D', -75, 25, false);
 		Nodes node5 = new Nodes('E', 15, 5, false);
 		
 		Beam beam = new Beam(node1, node2);
