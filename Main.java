@@ -4,7 +4,7 @@ class Main
 	{
 		Nodes node1 = new Nodes('A', 0, 0, true);
 		Nodes node2 = new Nodes('B', 10, 0, true);
-		Nodes node3 = new Nodes('C', 5, 5, false);
+		Nodes node3 = new Nodes('C', 5, 10, false);
 		Nodes node4 = new Nodes('D', -5, 5, false);
 		Nodes node5 = new Nodes('E', 15, 5, false);
 		
@@ -102,9 +102,9 @@ class Main
 						if(pos != beamI)
 						{
 							Beam curBeam = beams.getValueAt(pos);
-							System.out.println("Beam: " + curBeam.getName());
+							//System.out.println("1Beam: " + curBeam.getName());
 							curBeam.setView(node);
-							anss += curBeam.getForce() * curBeam.getDX() / curBeam.getHYP();
+							anss -= curBeam.getForce() * curBeam.getDX() / curBeam.getHYP();
 						}
 					}
 					double realans = (anss * testB.getHYP() / testB.getDX());
@@ -124,7 +124,7 @@ class Main
 						curBeam.setView(node);
 						//System.out.println(node.getName());
 						//curBeam.printBeam();
-						System.out.println("Beam:" + curBeam.getName());
+						//System.out.println("2Beam:" + curBeam.getName());
 						xforce = curBeam.getDX() / curBeam.getHYP();
 						yforce = curBeam.getDY() / curBeam.getHYP();
 						//System.out.printf("X:%.2f Y:%.2f\n", xforce, yforce);
