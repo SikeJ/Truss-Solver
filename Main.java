@@ -3,9 +3,9 @@ class Main
 	public static void main(String [] args)
 	{
 		Nodes node1 = new Nodes('A', 0, 0, true);
-		Nodes node2 = new Nodes('B', 10, 0, true);
-		Nodes node3 = new Nodes('C', 5, 5, false);
-		Nodes node4 = new Nodes('D', -5, 5, false);
+		Nodes node2 = new Nodes('B', 50, 0, true);
+		Nodes node3 = new Nodes('C', 25, 90, false);
+		Nodes node4 = new Nodes('D', -75, 25, false);
 		Nodes node5 = new Nodes('E', 15, 5, false);
 		
 		Beam beam = new Beam(node1, node2);
@@ -13,6 +13,8 @@ class Main
 		Beam beam3 = new Beam(node2, node3);
 		node3.setNodeForce(-100.0);
 		List<Force> appliedForces = new List<Force>(node3.nodeForce);
+
+		SetUpGUI gui = new SetUpGUI();
 
 		//Creating a more complicated truss in order to test the program
 		
@@ -29,9 +31,11 @@ class Main
 		
 
 		Nodes[] supports = {node1, node2};
-
-		//Nodes[] nodes = {node1, node2, node3};
-
+/*
+		Nodes[] nodes = {node1, node2, node3};
+		Beam[] beamed = {beam, beam2, beam3};
+*/
+		
 		//Finds support reactions. For 3+ supports have to solve integrals
 		for(int i = 0; i < supports.length; i++)
 		{
@@ -85,29 +89,33 @@ class Main
 				}
 			}
 
-			System.out.println("Checking at Node: " + node.getName());
+			//System.out.pritln("Checking at Node: " + node.getName());
 			switch(noForce)
 			{
 				case 0:
-					System.out.println("Popping");
+					//System.out.pritln("Popping");
 					stack.pop();
 					break;
 
 				case 1:
 					int beamI = beamPosition.getValueAt(0);
 					Beam testB = beams.getValueAt(beamI);
+					testB.setView(node);
 					double anss = 0;
 					for(int pos = 0; pos < beams.size(); pos++)
 					{
 						if(pos != beamI)
 						{
 							Beam curBeam = beams.getValueAt(pos);
-							System.out.println("Beam: " + curBeam.getName());
+							////System.out.pritln("1Beam: " + curBeam.getName());
 							curBeam.setView(node);
-							anss += curBeam.getForce() * curBeam.getDX() / curBeam.getHYP();
+							anss -= curBeam.getForce() * curBeam.getDX() / curBeam.getHYP();
 						}
 					}
+					//System.out.pritln(anss);
+
 					double realans = (anss * testB.getHYP() / testB.getDX());
+					//System.out.pritln(realans);
 					testB.setForce(realans);
 					stack.pop();
 					break;
@@ -122,9 +130,9 @@ class Main
 					{
 						Beam curBeam = beams.getValueAt(beamPosition.getValueAt(pos));
 						curBeam.setView(node);
-						//System.out.println(node.getName());
+						////System.out.pritln(node.getName());
 						//curBeam.printBeam();
-						System.out.println("Beam:" + curBeam.getName());
+						////System.out.pritln("2Beam:" + curBeam.getName());
 						xforce = curBeam.getDX() / curBeam.getHYP();
 						yforce = curBeam.getDY() / curBeam.getHYP();
 						//System.out.printf("X:%.2f Y:%.2f\n", xforce, yforce);
@@ -144,14 +152,14 @@ class Main
 							curBeam.setView(node);
 							xforce = curBeam.getDX() / curBeam.getHYP();
 							yforce = curBeam.getDY() / curBeam.getHYP();
-							//System.out.println("Beam:" + curBeam.getName());
+							////System.out.pritln("Beam:" + curBeam.getName());
 							//System.out.printf("Ans X:%.2f Y:%.2f\n", xforce, yforce);
 							answers[0] -= xforce * curBeam.getForce();
 							answers[1] -= yforce * curBeam.getForce();
 						}
 					}
 					answers[1] -= node.getNodeForce();
-					//System.out.println(answers[1]);
+					////System.out.pritln(answers[1]);
 
 					GaussElim test = new GaussElim(variables, answers);
 					double[] ans = test.getValues();
@@ -165,11 +173,11 @@ class Main
 					break;
 
 				default:
-					System.out.println("There's more then 2 missing forces, can't solve with this method");
+					//System.out.pritln("There's more then 2 missing forces, can't solve with this method");
 			}
 			whileTrace++;
 		}
-		System.out.println(whileTrace);
+		//System.out.pritln(whileTrace);
 		
 		
 		for(Nodes nodeJ:nodes)
