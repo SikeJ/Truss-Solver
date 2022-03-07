@@ -11,10 +11,10 @@ class Main
 		Beam beam = new Beam(node1, node2);
 		Beam beam2 = new Beam(node1, node3);
 		Beam beam3 = new Beam(node2, node3);
-		node3.setNodeForce(-100.0);
+		//node3.setNodeForce(-100.0);
 		List<Force> appliedForces = new List<Force>(node3.nodeForce);
 
-		SetUpGUI gui = new SetUpGUI();
+		//SetUpGUI gui = new SetUpGUI();
 
 		//Creating a more complicated truss in order to test the program
 		

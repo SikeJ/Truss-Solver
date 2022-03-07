@@ -61,7 +61,14 @@ class Nodes
 	/** Returns the Force applied at the node if there is any */
 	public Double getNodeForce()
 	{
-		return this.nodeForce.getForce();
+		Double force;
+		try {
+			force = this.nodeForce.getForce();
+		}
+		catch(NullPointerException e) {
+			force = 0.0;
+		}
+		return force;
 	}
 	
 	/** Sets the Y coordinate, in case the node wants to be moved */
@@ -107,7 +114,7 @@ class Nodes
 	{
 		System.out.println("-------------------------------");
 		System.out.printf("Node: %c\nLocation: (%.1f,%.1f)\nForce: %.2f %s\nSupport: %b\nBeams: "
-			, this.name, this.x, this.y, this.nodeForce.getForce()
+			, this.name, this.x, this.y, getNodeForce()
 			, this.nodeForce.getUnits(), this.support);
 		String beamsString = "";
 		for(int i = 0; i < this.connections.size(); i++)
