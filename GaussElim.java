@@ -46,6 +46,8 @@ public class GaussElim
 					maxI = k;
 			}
 			
+			//PrintArray(x, ans);
+
 			if(maxI != i)
 			{
 				double[] temp = x[maxI];
