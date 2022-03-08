@@ -20,10 +20,12 @@ class Force
         return this.node;
     }
 
-    /** Returns the force so that ti can be used in other methods */
-    public Double getForce()
+    /** Returns the force so that it can be used in other methods */
+    public double getForce()
     {
-        return this.force;
+    	//Because some of the methods use the forces as nulls to keep track of particular things
+    	// it checks to see if the force is null before sending the result
+        return this.force == null ? 0 : this.force;
     }
 
     /** Returns the units so that everything can be calculated correctly */
