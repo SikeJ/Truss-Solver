@@ -29,6 +29,8 @@ class Main
 		Nodes[] nodes = {node1, node2, node3, node4, node5};
 		Beam[] beamed = {beam, beam2, beam3, beam4, beam5, beam6, beam7};
 		System.out.println("I'm just making sure this bulllshiiiii still works out here homie");
+		int guy = 1;
+
 		
 
 		Nodes[] supports = {node1, node2};
