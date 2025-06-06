@@ -92,10 +92,10 @@ class Main
 
 			//System.out.pritln("Checking at Node: " + node.getName());
 			switch (noForce) {
-				case 0 ->
+				case 0: 
 					//System.out.pritln("Popping");
 						stack.pop();
-				case 1 -> {
+				case 1: {
 					int beamI = beamPosition.getValueAt(0);
 					Beam testB = beams.getValueAt(beamI);
 					testB.setView(node);
@@ -115,7 +115,7 @@ class Main
 					testB.setForce(realans);
 					stack.pop();
 				}
-				case 2 -> {
+				case 2: {
 					int pos = 0;
 					double[][] variables = new double[2][2];
 					double xforce;
@@ -162,7 +162,7 @@ class Main
 					}
 					stack.pop();
 				}
-				default -> {
+				default: {
 				}
 				//System.out.pritln("There's more then 2 missing forces, can't solve with this method");
 			}

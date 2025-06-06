@@ -1,0 +1,6 @@
+Welcome to the greatest automatic Truss Solver!
+
+To start the program please select one of the options below:
+[0] Create a brand new Truss
+[1] Load a previously saved Truss
+[2] Quit the program :(
