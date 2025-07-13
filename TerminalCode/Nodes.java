@@ -1,7 +1,7 @@
 class Nodes
 {
 	//setup private variables for the node class
-	private char name;
+	private int name;
 	private List<Beam> connections;
 	private double x;
 	private double y;
@@ -10,7 +10,7 @@ class Nodes
 	public int unknowns;
 	
 	/** Constructor for the Node class */
-	public Nodes(char name, double x, double y, boolean support)
+	public Nodes(int name, double x, double y, boolean support)
 	{
 		//Sets the name, location of the current Node
 		this.name = name;
@@ -28,7 +28,7 @@ class Nodes
 	}
 	
 	/** Retruns the name of the Node */
-	public char getName()
+	public int getName()
 	{
 		return this.name;
 	}
@@ -113,7 +113,7 @@ class Nodes
 	public void printNode()
 	{
 		System.out.println("-------------------------------");
-		System.out.printf("Node: %c\nLocation: (%.1f,%.1f)\nForce: %.2f %s\nSupport: %b\nBeams: "
+		System.out.printf("Node: %d\nLocation: (%.1f,%.1f)\nForce: %.2f %s\nSupport: %b\nBeams: "
 			, this.name, this.x, this.y, getNodeForce()
 			, this.nodeForce.getUnits(), this.support);
 		String beamsString = "";

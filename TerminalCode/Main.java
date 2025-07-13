@@ -15,6 +15,10 @@ public class Main
 	// Iniitalizing any variables to use throughout the entire program
 	static String optionText;
 	static Scanner choice = new Scanner(System.in);
+
+	// Setups the Dictionary to keep track of the Nodes of the Truss
+	static Dictionary<Integer, Nodes> trussNodes = new Hashtable<Integer, Nodes>();
+	static int nodeName = 0;
 	
 	/** Start point of the entire program */
 	public static void main(String[] args)
@@ -103,6 +107,7 @@ public class Main
 		{
 			case "0":
 				newNode();
+				System.out.println("Why isn't this working?????");
 				break;
 			
 			case "1":
@@ -130,13 +135,46 @@ public class Main
 				choice.nextLine();
 				buildTruss();
 		}
+		System.out.println("uh???");
 
 	}
 
 	/** Adds a Node to the Truss being built; User determines location */
 	public static void newNode()
 	{
-		System.out.println("Need to add either a dictionary to remember the Nodes or a List... Can't think of which is better atm");
+		// Clear the output of the program and write out the truss the program already has
+		clearScreen();
+		printTruss();
+
+		// Make the user input the two 'support' Nodes of the Truss
+		while(trussNodes.size() < 2)
+		{
+			optionText = """
+				It's time to decide the coordinates of the two supporting Nodes
+				Please enter the X & Y coordinates for Node: """ + nodeName + """
+				 below
+				X: """;
+			System.out.print(optionText);
+			Double xcord = choice.nextDouble();
+
+			optionText = "Y:";
+			System.out.print(optionText);
+			Double ycord = choice.nextDouble();
+
+			trussNodes.put(nodeName, new Nodes(nodeName, xcord, ycord, true));
+			nodeName++;
+		}
+		if(trussNodes.size() < 2)
+			System.out.println("There is not a truss");
+
+		else
+			System.out.println("There is in fact a truss");
+
+		// Output message to get 
+		printTruss();
+
+		// Re-loop through the options so they can chose to add more or stop
+		//newNode();
 	}
 
 	/** Adds a Beam between two Nodes specified by the user */
