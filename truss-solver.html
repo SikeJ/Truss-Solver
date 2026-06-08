@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Truss Solver</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f4f3ef;
+  --color-background-tertiary: #eceae4;
+  --color-background-info: #e6f1fb;
+  --color-background-danger: #fcebeb;
+  --color-background-success: #eaf3de;
+  --color-text-primary: #1a1a18;
+  --color-text-secondary: #5f5e5a;
+  --color-text-info: #185fa5;
+  --color-text-danger: #a32d2d;
+  --color-text-success: #3b6d11;
+  --color-border-tertiary: rgba(0,0,0,0.12);
+  --color-border-secondary: rgba(0,0,0,0.22);
+  --color-border-primary: rgba(0,0,0,0.35);
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --font-sans: system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background-primary: #1e1e1c;
+    --color-background-secondary: #252523;
+    --color-background-tertiary: #2c2c2a;
+    --color-background-info: #042c53;
+    --color-background-danger: #501313;
+    --color-background-success: #173404;
+    --color-text-primary: #e8e6de;
+    --color-text-secondary: #9c9a92;
+    --color-text-info: #85b7eb;
+    --color-text-danger: #f09595;
+    --color-text-success: #97c459;
+    --color-border-tertiary: rgba(255,255,255,0.10);
+    --color-border-secondary: rgba(255,255,255,0.20);
+    --color-border-primary: rgba(255,255,255,0.32);
+  }
+}
+body { font-family: var(--font-sans); background: var(--color-background-tertiary); display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 16px; }
+
+.app { display: grid; grid-template-columns: 260px 1fr; grid-template-rows: auto 1fr auto; height: 680px; width: 100%; max-width: 1100px; gap: 0; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; background: var(--color-background-primary); box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+
+.toolbar { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 0.5px solid var(--color-border-tertiary); background: var(--color-background-secondary); flex-wrap: wrap; }
+.toolbar-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-right: 8px; }
+.tb-sep { width: 0.5px; height: 20px; background: var(--color-border-secondary); margin: 0 4px; }
+
+.sidebar { border-right: 0.5px solid var(--color-border-tertiary); display: flex; flex-direction: column; overflow: hidden; background: var(--color-background-primary); }
+.sidebar-section { padding: 10px 12px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.sidebar-section h3 { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+
+.mode-btns { display: flex; gap: 4px; }
+.mode-btn { flex: 1; padding: 5px 0; font-size: 12px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: transparent; color: var(--color-text-secondary); cursor: pointer; transition: all 0.15s; }
+.mode-btn.active { background: var(--color-background-info); color: var(--color-text-info); border-color: transparent; font-weight: 500; }
+.mode-btn:hover:not(.active) { background: var(--color-background-secondary); color: var(--color-text-primary); }
+
+.form-row { display: flex; flex-direction: column; gap: 3px; margin-bottom: 8px; }
+.form-row label { font-size: 11px; color: var(--color-text-secondary); }
+.form-row input, .form-row select {
+  font-size: 12px; padding: 4px 7px;
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-md);
+  background: var(--color-background-primary);
+  color: var(--color-text-primary); width: 100%;
+}
+.form-row input:focus, .form-row select:focus { outline: none; border-color: var(--color-border-primary); }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+
+.btn { padding: 5px 10px; font-size: 12px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: transparent; color: var(--color-text-primary); cursor: pointer; transition: all 0.15s; }
+.btn:hover { background: var(--color-background-secondary); }
+.btn.primary { background: var(--color-background-info); color: var(--color-text-info); border-color: transparent; font-weight: 500; }
+.btn.primary:hover { opacity: 0.88; }
+.btn.danger { background: var(--color-background-danger); color: var(--color-text-danger); border-color: transparent; }
+.btn.full { width: 100%; }
+
+.canvas-area { position: relative; overflow: hidden; background: var(--color-background-primary); cursor: crosshair; }
+canvas { display: block; width: 100%; height: 100%; }
+
+.results-panel { grid-column: 1 / -1; border-top: 0.5px solid var(--color-border-tertiary); background: var(--color-background-secondary); padding: 10px 14px; max-height: 180px; overflow-y: auto; }
+.results-panel h3 { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+.results-grid { display: flex; gap: 24px; flex-wrap: wrap; }
+.result-group { min-width: 160px; }
+.result-group h4 { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 4px; }
+.result-item { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 2px 0; font-size: 12px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.result-item:last-child { border-bottom: none; }
+.result-label { color: var(--color-text-secondary); font-family: var(--font-mono); }
+.result-val { font-weight: 500; font-family: var(--font-mono); }
+.tension { color: var(--color-text-danger); }
+.compression { color: var(--color-text-info); }
+.zero-force { color: var(--color-text-secondary); }
+.msg-box { font-size: 12px; padding: 6px 10px; border-radius: var(--border-radius-md); }
+.msg-error { background: var(--color-background-danger); color: var(--color-text-danger); }
+.msg-ok { background: var(--color-background-success); color: var(--color-text-success); }
+
+.badge { display: inline-block; font-size: 10px; padding: 1px 5px; border-radius: 99px; font-weight: 500; }
+.badge-tension { background: var(--color-background-danger); color: var(--color-text-danger); }
+.badge-compression { background: var(--color-background-info); color: var(--color-text-info); }
+
+.prop-panel { padding: 8px 12px; flex: 1; overflow-y: auto; }
+.prop-panel h3 { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+.prop-row { display: flex; align-items: center; justify-content: space-between; padding: 3px 0; font-size: 12px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.prop-row:last-child { border-bottom: none; }
+.prop-row span:first-child { color: var(--color-text-secondary); }
+
+.hint { font-size: 11px; color: var(--color-text-secondary); padding: 6px 0; line-height: 1.5; }
+.tag { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 99px; background: var(--color-background-secondary); color: var(--color-text-secondary); border: 0.5px solid var(--color-border-tertiary); margin: 2px 2px 0 0; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="toolbar">
+    <span class="toolbar-title">Truss Solver</span>
+    <div class="tb-sep"></div>
+    <div class="mode-btns" style="display:flex;gap:4px;">
+      <button class="mode-btn active" id="btn-node" onclick="setMode('node')">&#9679; Node</button>
+      <button class="mode-btn" id="btn-member" onclick="setMode('member')">&#9651; Member</button>
+      <button class="mode-btn" id="btn-select" onclick="setMode('select')">&#8594; Select</button>
+    </div>
+    <div class="tb-sep"></div>
+    <button class="btn" onclick="loadExample()">Example</button>
+    <button class="btn" onclick="clearAll()">Clear</button>
+    <div class="tb-sep"></div>
+    <button class="btn primary" onclick="solve()">Solve</button>
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <h3>Add node</h3>
+      <div class="form-grid">
+        <div class="form-row"><label>X (units)</label><input type="number" id="in-x" value="0" step="1"></div>
+        <div class="form-row"><label>Y (units)</label><input type="number" id="in-y" value="0" step="1"></div>
+      </div>
+      <div class="form-row"><label>Support type</label>
+        <select id="in-support">
+          <option value="none">Free</option>
+          <option value="pin">Pin (fixed)</option>
+          <option value="roller-x">Roller (horizontal)</option>
+          <option value="roller-y">Roller (vertical)</option>
+        </select>
+      </div>
+      <div class="form-grid">
+        <div class="form-row"><label>Fx (lbf)</label><input type="number" id="in-fx" value="0" step="10"></div>
+        <div class="form-row"><label>Fy (lbf)</label><input type="number" id="in-fy" value="0" step="10"></div>
+      </div>
+      <button class="btn primary full" onclick="addNodeFromForm()">Add node</button>
+    </div>
+
+    <div class="sidebar-section">
+      <h3>Add member</h3>
+      <div class="form-row"><label>From node</label><select id="in-n1" style="font-size:12px"></select></div>
+      <div class="form-row"><label>To node</label><select id="in-n2" style="font-size:12px"></select></div>
+      <button class="btn primary full" onclick="addMemberFromForm()">Add member</button>
+    </div>
+
+    <div class="prop-panel" id="prop-panel">
+      <h3>Selection</h3>
+      <p class="hint">Click a node or member to view/edit its properties. Click the canvas to place nodes in "Node" mode.</p>
+      <p class="hint" style="margin-top:6px">
+        <span class="tag">Node</span>
+        <span class="tag">Member</span>
+        <span class="tag">Pin support</span>
+        <span class="tag">Roller</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="canvas-area" id="canvas-area">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <div class="results-panel" id="results-panel">
+    <h3>Results</h3>
+    <p class="hint">Click "Solve" to analyze the truss. Member forces will appear here.</p>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const area = document.getElementById('canvas-area');
+
+let nodes = [];
+let members = [];
+let mode = 'node';
+let selected = null;
+let memberStart = null;
+let solved = false;
+let nodeIdCounter = 0;
+
+const COLORS = {
+  node: '#1D9E75',
+  support: '#185FA5',
+  member: '#888780',
+  selected: '#BA7517',
+  tension: '#A32D2D',
+  compression: '#185FA5',
+  zero: '#888780',
+  force: '#D85A30',
+  reaction: '#185FA5',
+};
+
+function isDark() {
+  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
+function resize() {
+  const r = area.getBoundingClientRect();
+  canvas.width = r.width * devicePixelRatio;
+  canvas.height = r.height * devicePixelRatio;
+  canvas.style.width = r.width + 'px';
+  canvas.style.height = r.height + 'px';
+  draw();
+}
+
+window.addEventListener('resize', resize);
+setTimeout(resize, 50);
+
+function worldToCanvas(x, y) {
+  const cx = canvas.width / devicePixelRatio / 2;
+  const cy = canvas.height / devicePixelRatio / 2;
+  return [cx + x * scale + panX, cy - y * scale + panY];
+}
+
+function canvasToWorld(px, py) {
+  const cx = canvas.width / devicePixelRatio / 2;
+  const cy = canvas.height / devicePixelRatio / 2;
+  return [(px - cx - panX) / scale, -(py - cy - panY) / scale];
+}
+
+let scale = 4, panX = 0, panY = 0;
+let dragging = false, dragStart = null, dragPanStart = null;
+
+function snapToGrid(v) { return Math.round(v); }
+
+function draw() {
+  const W = canvas.width / devicePixelRatio;
+  const H = canvas.height / devicePixelRatio;
+  ctx.save();
+  ctx.scale(devicePixelRatio, devicePixelRatio);
+  ctx.clearRect(0, 0, W, H);
+
+  const dark = isDark();
+  ctx.fillStyle = dark ? '#1a1a18' : '#f8f7f4';
+  ctx.fillRect(0, 0, W, H);
+
+  drawGrid(W, H);
+  for (const m of members) drawMember(m);
+  for (const n of nodes) drawNode(n);
+
+  if (memberStart !== null) {
+    const n = nodes[memberStart];
+    const [sx, sy] = worldToCanvas(n.x, n.y);
+    ctx.beginPath();
+    ctx.moveTo(sx, sy);
+    ctx.lineTo(lastMouseX, lastMouseY);
+    ctx.strokeStyle = COLORS.selected;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  ctx.restore();
+}
+
+function drawGrid(W, H) {
+  const dark = isDark();
+  ctx.strokeStyle = dark ? '#2a2a28' : '#e8e6e0';
+  ctx.lineWidth = 0.5;
+  const step = scale;
+  const [ox, oy] = worldToCanvas(0, 0);
+  for (let x = ox % step; x < W; x += step) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+  for (let y = oy % step; y < H; y += step) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+  ctx.strokeStyle = dark ? '#3a3a36' : '#d0cec8';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(ox, 0); ctx.lineTo(ox, H); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0, oy); ctx.lineTo(W, oy); ctx.stroke();
+}
+
+function drawMember(m) {
+  const n1 = nodes[m.i1], n2 = nodes[m.i2];
+  const [x1, y1] = worldToCanvas(n1.x, n1.y);
+  const [x2, y2] = worldToCanvas(n2.x, n2.y);
+
+  let color = COLORS.member;
+  let lw = 2;
+  if (solved && m.force !== null) {
+    const f = m.force;
+    if (Math.abs(f) < 0.001) { color = COLORS.zero; lw = 1.5; }
+    else if (f > 0) { color = COLORS.tension; lw = 1.5 + Math.min(3, Math.abs(f) / 200); }
+    else { color = COLORS.compression; lw = 1.5 + Math.min(3, Math.abs(f) / 200); }
+  }
+  if (selected && selected.type === 'member' && selected.idx === members.indexOf(m)) {
+    color = COLORS.selected; lw = 3;
+  }
+
+  ctx.beginPath();
+  ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = lw;
+  ctx.stroke();
+
+  if (solved && m.force !== null) {
+    const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+    const f = m.force;
+    const label = (f > 0 ? '+' : '') + f.toFixed(1) + ' lbf';
+    ctx.font = '10px ' + getComputedStyle(document.body).fontFamily;
+    ctx.textAlign = 'center';
+    const dark = isDark();
+    ctx.fillStyle = dark ? 'rgba(30,30,28,0.80)' : 'rgba(248,247,244,0.88)';
+    const tw = ctx.measureText(label).width;
+    ctx.fillRect(mx - tw / 2 - 3, my - 8, tw + 6, 13);
+    ctx.fillStyle = color;
+    ctx.fillText(label, mx, my + 2);
+  }
+}
+
+function drawNode(n) {
+  const [cx, cy] = worldToCanvas(n.x, n.y);
+  const idx = nodes.indexOf(n);
+  const isSel = selected && selected.type === 'node' && selected.idx === idx;
+  const dark = isDark();
+
+  if (n.support === 'pin') {
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx - 10, cy + 14);
+    ctx.lineTo(cx + 10, cy + 14);
+    ctx.closePath();
+    ctx.fillStyle = isSel ? COLORS.selected : COLORS.support;
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(cx - 14, cy + 15);
+    ctx.lineTo(cx + 14, cy + 15);
+    ctx.strokeStyle = isSel ? COLORS.selected : COLORS.support;
+    ctx.lineWidth = 2; ctx.stroke();
+  } else if (n.support === 'roller-x' || n.support === 'roller-y') {
+    const ang = n.support === 'roller-y' ? 0 : Math.PI / 2;
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(ang);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(-10, 14);
+    ctx.lineTo(10, 14);
+    ctx.closePath();
+    ctx.fillStyle = isSel ? COLORS.selected : COLORS.support;
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(-8, 17, 3, 0, Math.PI * 2);
+    ctx.arc(8, 17, 3, 0, Math.PI * 2);
+    ctx.fillStyle = isSel ? COLORS.selected : COLORS.support;
+    ctx.fill();
+    ctx.restore();
+  }
+
+  if (n.fx !== 0 || n.fy !== 0) {
+    const len = 28;
+    if (n.fx !== 0) {
+      const dir = n.fx > 0 ? 1 : -1;
+      const ex = cx + dir * len;
+      ctx.beginPath(); ctx.moveTo(ex, cy); ctx.lineTo(cx, cy);
+      ctx.strokeStyle = COLORS.force; ctx.lineWidth = 2; ctx.stroke();
+      drawArrowHead(ex, cy, dir * Math.PI, COLORS.force);
+      ctx.font = '10px ' + getComputedStyle(document.body).fontFamily;
+      ctx.fillStyle = COLORS.force;
+      ctx.textAlign = dir > 0 ? 'left' : 'right';
+      ctx.fillText(Math.abs(n.fx) + ' lbf', ex + dir * 4, cy - 3);
+    }
+    if (n.fy !== 0) {
+      const dir = n.fy > 0 ? -1 : 1;
+      const ey = cy + dir * len;
+      ctx.beginPath(); ctx.moveTo(cx, ey); ctx.lineTo(cx, cy);
+      ctx.strokeStyle = COLORS.force; ctx.lineWidth = 2; ctx.stroke();
+      drawArrowHead(cx, ey, dir * Math.PI / 2, COLORS.force);
+      ctx.font = '10px ' + getComputedStyle(document.body).fontFamily;
+      ctx.fillStyle = COLORS.force;
+      ctx.textAlign = 'left';
+      ctx.fillText(Math.abs(n.fy) + ' lbf', cx + 4, ey - 3);
+    }
+  }
+
+  if (solved && n.support !== 'none' && (n.rx !== undefined || n.ry !== undefined)) {
+    const len = 28;
+    if (n.rx !== undefined && n.rx !== null && Math.abs(n.rx) > 0.001) {
+      const dir = n.rx > 0 ? -1 : 1;
+      const ex = cx + dir * len;
+      ctx.beginPath(); ctx.moveTo(ex, cy); ctx.lineTo(cx, cy);
+      ctx.strokeStyle = COLORS.reaction; ctx.lineWidth = 1.5;
+      ctx.setLineDash([3,2]); ctx.stroke(); ctx.setLineDash([]);
+      drawArrowHead(ex, cy, dir * Math.PI, COLORS.reaction);
+    }
+    if (n.ry !== undefined && n.ry !== null && Math.abs(n.ry) > 0.001) {
+      const dir = n.ry > 0 ? -1 : 1;
+      const ey = cy + dir * len;
+      ctx.beginPath(); ctx.moveTo(cx, ey); ctx.lineTo(cx, cy);
+      ctx.strokeStyle = COLORS.reaction; ctx.lineWidth = 1.5;
+      ctx.setLineDash([3,2]); ctx.stroke(); ctx.setLineDash([]);
+      drawArrowHead(cx, ey, dir * Math.PI / 2, COLORS.reaction);
+    }
+  }
+
+  ctx.beginPath();
+  ctx.arc(cx, cy, isSel ? 7 : 5, 0, Math.PI * 2);
+  const base = n.support !== 'none' ? COLORS.support : COLORS.node;
+  ctx.fillStyle = isSel ? COLORS.selected : base;
+  ctx.fill();
+  ctx.strokeStyle = dark ? '#1a1a18' : '#f8f7f4';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  ctx.font = 'bold 11px ' + getComputedStyle(document.body).fontFamily;
+  ctx.textAlign = 'center';
+  ctx.fillStyle = dark ? '#e0dfd7' : '#2C2C2A';
+  ctx.fillText(n.name, cx, cy - 10);
+}
+
+function drawArrowHead(x, y, angle, color) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(angle);
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(-8, -4);
+  ctx.lineTo(-8, 4);
+  ctx.closePath();
+  ctx.fillStyle = color;
+  ctx.fill();
+  ctx.restore();
+}
+
+let lastMouseX = 0, lastMouseY = 0;
+
+canvas.addEventListener('mousemove', (e) => {
+  const r = canvas.getBoundingClientRect();
+  lastMouseX = e.clientX - r.left;
+  lastMouseY = e.clientY - r.top;
+  if (dragging && dragStart) {
+    panX = dragPanStart.px + (lastMouseX - dragStart.x);
+    panY = dragPanStart.py + (lastMouseY - dragStart.y);
+    draw(); return;
+  }
+  if (mode === 'member' && memberStart !== null) draw();
+});
+
+canvas.addEventListener('mousedown', (e) => {
+  if (e.button === 1 || e.altKey) {
+    dragging = true;
+    dragStart = { x: lastMouseX, y: lastMouseY };
+    dragPanStart = { px: panX, py: panY };
+    return;
+  }
+  const [wx, wy] = canvasToWorld(lastMouseX, lastMouseY);
+  const hit = hitTest(lastMouseX, lastMouseY);
+
+  if (mode === 'node') {
+    if (hit && hit.type === 'node') { selected = hit; showProps(); draw(); return; }
+    const x = snapToGrid(wx), y = snapToGrid(wy);
+    const name = String.fromCharCode(65 + nodeIdCounter % 26) + (nodeIdCounter >= 26 ? Math.floor(nodeIdCounter / 26) : '');
+    nodeIdCounter++;
+    nodes.push({ name, x, y, fx: 0, fy: 0, support: 'none', rx: null, ry: null });
+    solved = false;
+    updateNodeSelects();
+    draw();
+  } else if (mode === 'member') {
+    if (hit && hit.type === 'node') {
+      if (memberStart === null) {
+        memberStart = hit.idx; draw();
+      } else {
+        if (memberStart !== hit.idx) {
+          const exists = members.some(m => (m.i1 === memberStart && m.i2 === hit.idx) || (m.i2 === memberStart && m.i1 === hit.idx));
+          if (!exists) { members.push({ i1: memberStart, i2: hit.idx, force: null }); solved = false; }
+        }
+        memberStart = null; draw();
+      }
+    } else { memberStart = null; draw(); }
+  } else if (mode === 'select') {
+    selected = hit; showProps(); draw();
+  }
+});
+
+canvas.addEventListener('mouseup', () => { dragging = false; dragStart = null; });
+
+canvas.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const factor = e.deltaY < 0 ? 1.1 : 0.91;
+  const [wx, wy] = canvasToWorld(lastMouseX, lastMouseY);
+  scale *= factor;
+  scale = Math.max(1, Math.min(80, scale));
+  const [nx, ny] = worldToCanvas(wx, wy);
+  panX += lastMouseX - nx;
+  panY += lastMouseY - ny;
+  draw();
+}, { passive: false });
+
+function hitTest(px, py) {
+  for (let i = 0; i < nodes.length; i++) {
+    const [cx, cy] = worldToCanvas(nodes[i].x, nodes[i].y);
+    if (Math.hypot(px - cx, py - cy) < 10) return { type: 'node', idx: i };
+  }
+  for (let i = 0; i < members.length; i++) {
+    const m = members[i];
+    const [x1, y1] = worldToCanvas(nodes[m.i1].x, nodes[m.i1].y);
+    const [x2, y2] = worldToCanvas(nodes[m.i2].x, nodes[m.i2].y);
+    const d = pointLineDistance(px, py, x1, y1, x2, y2);
+    if (d < 6) return { type: 'member', idx: i };
+  }
+  return null;
+}
+
+function pointLineDistance(px, py, x1, y1, x2, y2) {
+  const dx = x2 - x1, dy = y2 - y1;
+  const len2 = dx * dx + dy * dy;
+  if (len2 === 0) return Math.hypot(px - x1, py - y1);
+  const t = Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / len2));
+  return Math.hypot(px - (x1 + t * dx), py - (y1 + t * dy));
+}
+
+function setMode(m) {
+  mode = m;
+  memberStart = null;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + m).classList.add('active');
+  canvas.style.cursor = m === 'select' ? 'default' : 'crosshair';
+  draw();
+}
+
+function updateNodeSelects() {
+  ['in-n1', 'in-n2'].forEach(id => {
+    const s = document.getElementById(id);
+    s.innerHTML = nodes.map((n, i) => `<option value="${i}">${n.name} (${n.x}, ${n.y})</option>`).join('');
+    if (nodes.length > 1 && id === 'in-n2') s.selectedIndex = Math.min(1, nodes.length - 1);
+  });
+}
+
+function addNodeFromForm() {
+  const x = parseFloat(document.getElementById('in-x').value) || 0;
+  const y = parseFloat(document.getElementById('in-y').value) || 0;
+  const support = document.getElementById('in-support').value;
+  const fx = parseFloat(document.getElementById('in-fx').value) || 0;
+  const fy = parseFloat(document.getElementById('in-fy').value) || 0;
+  const name = String.fromCharCode(65 + nodeIdCounter % 26) + (nodeIdCounter >= 26 ? Math.floor(nodeIdCounter / 26) : '');
+  nodeIdCounter++;
+  nodes.push({ name, x, y, fx, fy, support, rx: null, ry: null });
+  solved = false;
+  updateNodeSelects();
+  fitView();
+  draw();
+}
+
+function addMemberFromForm() {
+  const i1 = parseInt(document.getElementById('in-n1').value);
+  const i2 = parseInt(document.getElementById('in-n2').value);
+  if (i1 === i2) return;
+  const exists = members.some(m => (m.i1 === i1 && m.i2 === i2) || (m.i2 === i1 && m.i1 === i2));
+  if (!exists) { members.push({ i1, i2, force: null }); solved = false; draw(); }
+}
+
+function showProps() {
+  const p = document.getElementById('prop-panel');
+  if (!selected) {
+    p.innerHTML = '<h3>Selection</h3><p class="hint">Click a node or member to view/edit its properties.</p>';
+    return;
+  }
+  if (selected.type === 'node') {
+    const n = nodes[selected.idx];
+    const connCount = members.filter(m => m.i1 === selected.idx || m.i2 === selected.idx).length;
+    p.innerHTML = `<h3>Node ${n.name}</h3>
+    <div class="form-row"><label>Support</label><select id="ep-support" onchange="editNode('support',this.value)">
+      <option value="none"${n.support==='none'?' selected':''}>Free</option>
+      <option value="pin"${n.support==='pin'?' selected':''}>Pin</option>
+      <option value="roller-x"${n.support==='roller-x'?' selected':''}>Roller (horiz)</option>
+      <option value="roller-y"${n.support==='roller-y'?' selected':''}>Roller (vert)</option>
+    </select></div>
+    <div class="form-grid">
+      <div class="form-row"><label>Fx (lbf)</label><input type="number" value="${n.fx}" onchange="editNode('fx',this.value)"></div>
+      <div class="form-row"><label>Fy (lbf)</label><input type="number" value="${n.fy}" onchange="editNode('fy',this.value)"></div>
+    </div>
+    <div class="prop-row"><span>Location</span><span>(${n.x}, ${n.y})</span></div>
+    <div class="prop-row"><span>Members</span><span>${connCount}</span></div>
+    ${solved && n.rx !== null ? `<div class="prop-row"><span>Rx</span><span style="color:var(--color-text-info)">${n.rx.toFixed(2)} lbf</span></div>` : ''}
+    ${solved && n.ry !== null ? `<div class="prop-row"><span>Ry</span><span style="color:var(--color-text-info)">${n.ry.toFixed(2)} lbf</span></div>` : ''}
+    <button class="btn danger full" style="margin-top:8px" onclick="deleteSelected()">Delete node</button>`;
+  } else {
+    const m = members[selected.idx];
+    const n1 = nodes[m.i1], n2 = nodes[m.i2];
+    const dx = n2.x - n1.x, dy = n2.y - n1.y;
+    const len = Math.sqrt(dx*dx + dy*dy);
+    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+    let forceHtml = '';
+    if (solved && m.force !== null) {
+      const cls = Math.abs(m.force) < 0.001 ? 'zero-force' : (m.force > 0 ? 'tension' : 'compression');
+      const label = Math.abs(m.force) < 0.001 ? 'Zero-force' : (m.force > 0 ? 'Tension' : 'Compression');
+      forceHtml = `<div class="prop-row"><span>Force</span><span class="${cls}">${m.force.toFixed(2)} lbf</span></div>
+      <div class="prop-row"><span>Type</span><span class="${cls}">${label}</span></div>`;
+    }
+    p.innerHTML = `<h3>Member ${n1.name}&ndash;${n2.name}</h3>
+    <div class="prop-row"><span>Nodes</span><span>${n1.name} &rarr; ${n2.name}</span></div>
+    <div class="prop-row"><span>Length</span><span>${len.toFixed(2)} units</span></div>
+    <div class="prop-row"><span>Angle</span><span>${angle.toFixed(1)}&deg;</span></div>
+    ${forceHtml}
+    <button class="btn danger full" style="margin-top:8px" onclick="deleteSelected()">Delete member</button>`;
+  }
+}
+
+function editNode(field, val) {
+  if (!selected || selected.type !== 'node') return;
+  const n = nodes[selected.idx];
+  if (field === 'fx' || field === 'fy') n[field] = parseFloat(val) || 0;
+  else n[field] = val;
+  solved = false;
+  draw();
+}
+
+function deleteSelected() {
+  if (!selected) return;
+  if (selected.type === 'node') {
+    const idx = selected.idx;
+    members = members.filter(m => m.i1 !== idx && m.i2 !== idx).map(m => ({
+      ...m,
+      i1: m.i1 > idx ? m.i1 - 1 : m.i1,
+      i2: m.i2 > idx ? m.i2 - 1 : m.i2,
+    }));
+    nodes.splice(idx, 1);
+  } else {
+    members.splice(selected.idx, 1);
+  }
+  selected = null;
+  solved = false;
+  updateNodeSelects();
+  showProps();
+  draw();
+}
+
+function fitView() {
+  if (nodes.length === 0) return;
+  const xs = nodes.map(n => n.x), ys = nodes.map(n => n.y);
+  const minX = Math.min(...xs), maxX = Math.max(...xs);
+  const minY = Math.min(...ys), maxY = Math.max(...ys);
+  const W = canvas.width / devicePixelRatio, H = canvas.height / devicePixelRatio;
+  const pad = 80;
+  const rx = maxX - minX || 10, ry = maxY - minY || 10;
+  scale = Math.min((W - pad * 2) / rx, (H - pad * 2) / ry, 60);
+  scale = Math.max(scale, 4);
+  panX = -(minX + rx / 2) * scale;
+  panY = (minY + ry / 2) * scale;
+  draw();
+}
+
+function gaussElim(A, b) {
+  const n = b.length;
+  const M = A.map((r, i) => [...r, b[i]]);
+  for (let col = 0; col < n; col++) {
+    let pivRow = -1, pivVal = 0;
+    for (let row = col; row < n; row++) {
+      if (Math.abs(M[row][col]) > pivVal) { pivVal = Math.abs(M[row][col]); pivRow = row; }
+    }
+    if (pivRow === -1 || pivVal < 1e-12) return null;
+    [M[col], M[pivRow]] = [M[pivRow], M[col]];
+    const div = M[col][col];
+    M[col] = M[col].map(v => v / div);
+    for (let row = 0; row < n; row++) {
+      if (row !== col) {
+        const f = M[row][col];
+        M[row] = M[row].map((v, j) => v - f * M[col][j]);
+      }
+    }
+  }
+  return M.map(r => r[n]);
+}
+
+function solve() {
+  if (nodes.length < 2) { showError('Need at least 2 nodes.'); return; }
+  if (members.length === 0) { showError('Need at least 1 member.'); return; }
+
+  const supports = nodes.filter(n => n.support !== 'none');
+  if (supports.length < 1) { showError('Need at least one support (pin or roller).'); return; }
+
+  const nNodes = nodes.length;
+  const nMembers = members.length;
+  let nReactions = 0;
+  nodes.forEach(n => {
+    if (n.support === 'pin') nReactions += 2;
+    else if (n.support === 'roller-x' || n.support === 'roller-y') nReactions += 1;
+  });
+
+  const totalUnknowns = nMembers + nReactions;
+  const totalEqs = 2 * nNodes;
+
+  if (totalUnknowns !== totalEqs) {
+    showError(`Truss is ${totalUnknowns > totalEqs ? 'indeterminate' : 'unstable'} (${totalUnknowns} unknowns, ${totalEqs} equations).`);
+    return;
+  }
+
+  const unknowns = [];
+  members.forEach((m, i) => unknowns.push({ type: 'member', idx: i }));
+  const reactionMap = [];
+  nodes.forEach((n, i) => {
+    if (n.support === 'pin') {
+      reactionMap.push({ nodeIdx: i, dir: 'x', unknownIdx: unknowns.length });
+      unknowns.push({ type: 'reaction', nodeIdx: i, dir: 'x' });
+      reactionMap.push({ nodeIdx: i, dir: 'y', unknownIdx: unknowns.length });
+      unknowns.push({ type: 'reaction', nodeIdx: i, dir: 'y' });
+    } else if (n.support === 'roller-x') {
+      reactionMap.push({ nodeIdx: i, dir: 'y', unknownIdx: unknowns.length });
+      unknowns.push({ type: 'reaction', nodeIdx: i, dir: 'y' });
+    } else if (n.support === 'roller-y') {
+      reactionMap.push({ nodeIdx: i, dir: 'x', unknownIdx: unknowns.length });
+      unknowns.push({ type: 'reaction', nodeIdx: i, dir: 'x' });
+    }
+  });
+
+  const nU = unknowns.length;
+  const A = Array.from({ length: totalEqs }, () => new Array(nU).fill(0));
+  const b = new Array(totalEqs).fill(0);
+
+  nodes.forEach((n, ni) => {
+    const eqX = 2 * ni, eqY = 2 * ni + 1;
+    b[eqX] = -n.fx;
+    b[eqY] = -n.fy;
+    members.forEach((m, mi) => {
+      if (m.i1 === ni || m.i2 === ni) {
+        const other = m.i1 === ni ? nodes[m.i2] : nodes[m.i1];
+        const dx = other.x - n.x, dy = other.y - n.y;
+        const len = Math.sqrt(dx * dx + dy * dy);
+        if (len < 1e-10) return;
+        A[eqX][mi] += dx / len;
+        A[eqY][mi] += dy / len;
+      }
+    });
+    reactionMap.forEach(r => {
+      if (r.nodeIdx === ni) {
+        if (r.dir === 'x') A[eqX][r.unknownIdx] += 1;
+        else A[eqY][r.unknownIdx] += 1;
+      }
+    });
+  });
+
+  const sol = gaussElim(A, b);
+  if (!sol) { showError('System could not be solved (singular matrix). Check supports and connectivity.'); return; }
+
+  members.forEach((m, i) => { m.force = sol[i]; });
+  nodes.forEach(n => { n.rx = null; n.ry = null; });
+  reactionMap.forEach(r => {
+    const n = nodes[r.nodeIdx];
+    if (r.dir === 'x') n.rx = sol[r.unknownIdx];
+    else n.ry = sol[r.unknownIdx];
+  });
+
+  solved = true;
+  showResults();
+  showProps();
+  draw();
+}
+
+function showResults() {
+  const rp = document.getElementById('results-panel');
+  const tensionM = members.filter(m => m.force > 0.001);
+  const compressM = members.filter(m => m.force < -0.001);
+  const zeroM = members.filter(m => Math.abs(m.force) <= 0.001);
+  const reactions = nodes.filter(n => n.rx !== null || n.ry !== null);
+
+  let html = '<h3>Results &mdash; method of joints</h3><div class="results-grid">';
+  if (members.length > 0) {
+    html += '<div class="result-group"><h4>Member forces</h4>';
+    members.forEach(m => {
+      const n1 = nodes[m.i1], n2 = nodes[m.i2];
+      const cls = Math.abs(m.force) < 0.001 ? 'zero-force' : (m.force > 0 ? 'tension' : 'compression');
+      const badge = Math.abs(m.force) < 0.001 ? '' : `<span class="badge ${m.force > 0 ? 'badge-tension' : 'badge-compression'}">${m.force > 0 ? 'T' : 'C'}</span>`;
+      html += `<div class="result-item"><span class="result-label">${n1.name}&ndash;${n2.name}</span><span class="result-val ${cls}">${m.force.toFixed(2)} lbf ${badge}</span></div>`;
+    });
+    html += '</div>';
+  }
+  if (reactions.length > 0) {
+    html += '<div class="result-group"><h4>Support reactions</h4>';
+    reactions.forEach(n => {
+      if (n.rx !== null) html += `<div class="result-item"><span class="result-label">${n.name} Rx</span><span class="result-val compression">${n.rx.toFixed(2)} lbf</span></div>`;
+      if (n.ry !== null) html += `<div class="result-item"><span class="result-label">${n.name} Ry</span><span class="result-val compression">${n.ry.toFixed(2)} lbf</span></div>`;
+    });
+    html += '</div>';
+  }
+  html += `<div class="result-group"><h4>Summary</h4>
+    <div class="result-item"><span class="result-label">Nodes</span><span class="result-val">${nodes.length}</span></div>
+    <div class="result-item"><span class="result-label">Members</span><span class="result-val">${members.length}</span></div>
+    <div class="result-item"><span class="result-label">Tension</span><span class="result-val tension">${tensionM.length}</span></div>
+    <div class="result-item"><span class="result-label">Compression</span><span class="result-val compression">${compressM.length}</span></div>
+    <div class="result-item"><span class="result-label">Zero-force</span><span class="result-val zero-force">${zeroM.length}</span></div>
+  </div></div>`;
+  rp.innerHTML = html;
+}
+
+function showError(msg) {
+  document.getElementById('results-panel').innerHTML = `<h3>Results</h3><div class="msg-box msg-error">&#9888; ${msg}</div>`;
+}
+
+function clearAll() {
+  nodes = []; members = []; selected = null; memberStart = null; solved = false; nodeIdCounter = 0;
+  updateNodeSelects(); showProps();
+  document.getElementById('results-panel').innerHTML = '<h3>Results</h3><p class="hint">Click "Solve" to analyze the truss.</p>';
+  draw();
+}
+
+function loadExample() {
+  clearAll();
+  nodes = [
+    { name: 'A', x: 0,  y: 0,  fx: 0,    fy: 0,    support: 'pin',      rx: null, ry: null },
+    { name: 'B', x: 40, y: 0,  fx: 0,    fy: 0,    support: 'roller-x', rx: null, ry: null },
+    { name: 'C', x: 20, y: 30, fx: 0,    fy: -500, support: 'none',     rx: null, ry: null },
+    { name: 'D', x: 0,  y: 30, fx: -200, fy: 0,    support: 'none',     rx: null, ry: null },
+    { name: 'E', x: 40, y: 30, fx: 0,    fy: 0,    support: 'none',     rx: null, ry: null },
+  ];
+  members = [
+    { i1: 0, i2: 1, force: null },
+    { i1: 0, i2: 3, force: null },
+    { i1: 1, i2: 4, force: null },
+    { i1: 3, i2: 4, force: null },
+    { i1: 3, i2: 2, force: null },
+    { i1: 4, i2: 2, force: null },
+    { i1: 0, i2: 2, force: null },
+  ];
+  nodeIdCounter = nodes.length;
+  updateNodeSelects();
+  fitView();
+  draw();
+}
+
+loadExample();
+setTimeout(fitView, 80);
+</script>
+</body>
+</html>

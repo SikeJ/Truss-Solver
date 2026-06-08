@@ -107,7 +107,6 @@ public class Main
 		{
 			case "0":
 				newNode();
-				System.out.println("Why isn't this working?????");
 				break;
 			
 			case "1":
@@ -135,8 +134,6 @@ public class Main
 				choice.nextLine();
 				buildTruss();
 		}
-		System.out.println("uh???");
-
 	}
 
 	/** Adds a Node to the Truss being built; User determines location */
